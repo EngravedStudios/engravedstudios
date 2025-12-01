@@ -1,33 +1,30 @@
 import 'package:appwrite/appwrite.dart';
-import 'package:appwrite/models.dart' as models;
-import '../../constants/appwrite_constants.dart';
-import '../../models/tag_model.dart';
-import '../../services/appwrite_service.dart';
-import '../interfaces/tag_repository_interface.dart';
+
+import '../../core/config/app_config.dart';
+import '../../core/logging/app_logger.dart';
+import '../../domain/entities/tag.dart';
+import '../../data/datasources/remote/appwrite_datasource.dart';
+import '../../domain/repositories/tag_repository_interface.dart';
 
 class TagRepository implements ITagRepository {
-  final AppwriteService _appwriteService;
+  final IAppwriteDatasource _datasource;
+  final AppLogger _logger;
 
-  TagRepository(this._appwriteService);
+  TagRepository(this._datasource, this._logger);
 
   @override
   Future<List<Tag>> getTags() async {
     try {
-      final databases = _appwriteService.databases;
-      if (databases == null) return [];
-
-      final result = await databases.listDocuments(
-        databaseId: AppwriteConstants.databaseId,
-        collectionId: AppwriteConstants.collectionIdTags,
+      final result = await _datasource.listDocuments(
+        collectionId: AppConfig.collectionIdTags,
         queries: [
           Query.orderAsc('tagName'),
         ],
       );
 
       return result.documents.map((doc) => Tag.fromMap(doc.data)).toList();
-    } catch (e) {
-      print('Error fetching tags: $e');
-      print('Error fetching tags: $e');
+    } catch (e, stackTrace) {
+      _logger.error('Failed to fetch tags', e, stackTrace);
       return [];
     }
   }
@@ -35,12 +32,8 @@ class TagRepository implements ITagRepository {
   @override
   Future<Tag?> getTagByName(String tagName) async {
     try {
-      final databases = _appwriteService.databases;
-      if (databases == null) return null;
-
-      final result = await databases.listDocuments(
-        databaseId: AppwriteConstants.databaseId,
-        collectionId: AppwriteConstants.collectionIdTags,
+      final result = await _datasource.listDocuments(
+        collectionId: AppConfig.collectionIdTags,
         queries: [
           Query.equal('tagName', tagName),
         ],
@@ -50,8 +43,8 @@ class TagRepository implements ITagRepository {
         return Tag.fromMap(result.documents.first.data);
       }
       return null;
-    } catch (e) {
-      print('Error fetching tag by name: $e');
+    } catch (e, stackTrace) {
+      _logger.error('Failed to fetch tag by name', e, stackTrace);
       return null;
     }
   }
@@ -59,35 +52,27 @@ class TagRepository implements ITagRepository {
   @override
   Future<void> createTag(Tag tag) async {
     try {
-      final databases = _appwriteService.databases;
-      if (databases == null) throw Exception('Database not initialized');
-
-      await databases.createDocument(
-        databaseId: AppwriteConstants.databaseId,
-        collectionId: AppwriteConstants.collectionIdTags,
+      await _datasource.createDocument(
+        collectionId: AppConfig.collectionIdTags,
         documentId: ID.unique(),
         data: tag.toMap(),
       );
-    } catch (e) {
-      print('Error creating tag: $e');
-      rethrow;
+    } catch (e, stackTrace) {
+      _logger.error('Failed to create tag', e, stackTrace);
+      throw Exception('Error creating tag: $e');
     }
   }
 
   @override
   Future<void> deleteTag(String documentId) async {
     try {
-      final databases = _appwriteService.databases;
-      if (databases == null) throw Exception('Database not initialized');
-
-      await databases.deleteDocument(
-        databaseId: AppwriteConstants.databaseId,
-        collectionId: AppwriteConstants.collectionIdTags,
+      await _datasource.deleteDocument(
+        collectionId: AppConfig.collectionIdTags,
         documentId: documentId,
       );
-    } catch (e) {
-      print('Error deleting tag: $e');
-      rethrow;
+    } catch (e, stackTrace) {
+      _logger.error('Failed to delete tag', e, stackTrace);
+      throw Exception('Error deleting tag: $e');
     }
   }
 }

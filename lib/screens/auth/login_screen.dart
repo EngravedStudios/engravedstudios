@@ -137,18 +137,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   const SizedBox(height: 24),
                   Row(
                     children: [
-                      Expanded(child: Divider(color: colorScheme.onSurface.withOpacity(0.2))),
+                      Expanded(child: Divider(color: colorScheme.onSurface.withValues(alpha: 0.2))),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: Text(
                           'Or continue with',
                           style: GoogleFonts.spaceMono(
                             fontSize: 12,
-                            color: colorScheme.onSurface.withOpacity(0.6),
+                            color: colorScheme.onSurface.withValues(alpha: 0.6),
                           ),
                         ),
                       ),
-                      Expanded(child: Divider(color: colorScheme.onSurface.withOpacity(0.2))),
+                      Expanded(child: Divider(color: colorScheme.onSurface.withValues(alpha: 0.2))),
                     ],
                   ),
                   const SizedBox(height: 24),
@@ -161,7 +161,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           },
                           style: OutlinedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 16),
-                            side: BorderSide(color: colorScheme.onSurface.withOpacity(0.2)),
+                            side: BorderSide(color: colorScheme.onSurface.withValues(alpha: 0.2)),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
@@ -184,7 +184,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           },
                           style: OutlinedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 16),
-                            side: BorderSide(color: colorScheme.onSurface.withOpacity(0.2)),
+                            side: BorderSide(color: colorScheme.onSurface.withValues(alpha: 0.2)),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),

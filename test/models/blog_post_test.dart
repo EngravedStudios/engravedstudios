@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:blog/models/blog_post.dart';
+import 'package:blog/domain/entities/blog_post.dart';
 
 void main() {
   group('BlogPost', () {
@@ -11,10 +11,10 @@ void main() {
       subtitle: 'Test Subtitle',
       content: 'Test Content',
       authorName: 'Test Author',
+      authorId: 'test-author-id',
       authorAvatarUrl: 'http://example.com/avatar.png',
       publishDate: testDate,
       readTimeMinutes: 5,
-      clapCount: 10,
       tags: ['tag1', 'tag2'],
       imageUrl: 'http://example.com/image.png',
       isPublished: true,

@@ -1,8 +1,12 @@
+import '../core/config/app_config.dart';
+
+/// @deprecated Use AppConfig instead
+/// Maintained for backwards compatibility during refactoring
 class AppwriteConstants {
-  static const String endpoint = 'https://fra.cloud.appwrite.io/v1'; // Replace with your endpoint if self-hosted
-  static const String projectId = '692360ef002dcc7a0255'; // Replace with your Project ID
-  static const String databaseId = 'noted'; // Replace with your Database ID
-  static const String collectionIdBlogPosts = 'noted_posts';
-  static const String collectionIdTags = 'noted_tags';
-  static const String collectionIdPostTags = 'noted_post-tags';
+  static String get endpoint => AppConfig.appwriteEndpoint;
+  static String get projectId => AppConfig.appwriteProjectId;
+  static String get databaseId => AppConfig.databaseId;
+  static String get collectionIdBlogPosts => AppConfig.collectionIdBlogPosts;
+  static String get collectionIdTags => AppConfig.collectionIdTags;
+  static String get collectionIdPostTags => AppConfig.collectionIdPostTags;
 }

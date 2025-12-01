@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../providers/auth_provider.dart';
-import '../../models/user_model.dart';
+import '../../domain/entities/user.dart';
+import '../../core/guards/admin_guard.dart';
+import '../../features/admin/presentation/screens/admin_dashboard_screen.dart';
 
 class UserSettingsTab extends ConsumerStatefulWidget {
   const UserSettingsTab({super.key});
@@ -20,7 +22,6 @@ class _UserSettingsTabState extends ConsumerState<UserSettingsTab> {
   
   bool _isEditingName = false;
   bool _isEditingEmail = false;
-  bool _isChangingPassword = false;
   bool _isLoading = false;
 
   @override
@@ -85,7 +86,7 @@ class _UserSettingsTabState extends ConsumerState<UserSettingsTab> {
         newPassword: _newPasswordController.text,
         oldPassword: _oldPasswordController.text.isNotEmpty ? _oldPasswordController.text : null,
       );
-      setState(() => _isChangingPassword = false);
+
       _oldPasswordController.clear();
       _newPasswordController.clear();
       if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Password updated')));
@@ -155,6 +156,32 @@ class _UserSettingsTabState extends ConsumerState<UserSettingsTab> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Admin Section
+        if (user.role == UserRole.admin) ...[
+          _buildSectionHeader('Administration', colorScheme),
+          const SizedBox(height: 16),
+          _buildCard(
+            colorScheme,
+            children: [
+              ListTile(
+                leading: Icon(Icons.admin_panel_settings, color: colorScheme.primary),
+                title: const Text('Admin Dashboard'),
+                subtitle: const Text('Manage users and permissions'),
+                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AdminGuard(
+                      child: AdminDashboardScreen(),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
+        ],
+
         // Profile Section
         _buildSectionHeader('Profile', colorScheme),
         const SizedBox(height: 16),
@@ -292,7 +319,7 @@ class _UserSettingsTabState extends ConsumerState<UserSettingsTab> {
   Widget _buildCard(ColorScheme colorScheme, {required List<Widget> children, Color? borderColor}) {
     return Card(
       elevation: 0,
-      color: colorScheme.surfaceVariant.withOpacity(0.3),
+      color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
         side: BorderSide(color: borderColor ?? colorScheme.outlineVariant),

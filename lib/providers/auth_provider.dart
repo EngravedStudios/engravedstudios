@@ -1,12 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/appwrite_service.dart';
-import '../repositories/interfaces/auth_repository_interface.dart';
+import '../domain/repositories/auth_repository_interface.dart';
 import '../repositories/implementations/auth_repository.dart';
-import '../models/user_model.dart';
+import '../domain/entities/user.dart';
 
-final appwriteServiceProvider = Provider<AppwriteService>((ref) {
-  return AppwriteService();
-});
+
 
 final authRepositoryProvider = Provider<IAuthRepository>((ref) {
   final appwriteService = ref.watch(appwriteServiceProvider);

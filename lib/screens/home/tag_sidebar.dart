@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../providers/auth_provider.dart';
-import '../../models/user_model.dart';
+import '../../domain/entities/user.dart';
 import '../../providers/tag_provider.dart';
-import '../../models/tag_model.dart';
+import '../../domain/entities/tag.dart';
 import '../../providers/blog_provider.dart';
 
 class TagSidebar extends ConsumerWidget {
@@ -22,7 +22,7 @@ class TagSidebar extends ConsumerWidget {
       width: 250,
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        border: Border(right: BorderSide(color: colorScheme.onSurface.withOpacity(0.1))),
+        border: Border(right: BorderSide(color: colorScheme.onSurface.withValues(alpha: 0.1))),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -44,8 +44,9 @@ class TagSidebar extends ConsumerWidget {
           Expanded(
             child: tagsAsync.when(
               data: (tags) => ListView.separated(
+                primary: false, // Detach from PrimaryScrollController to avoid NestedScrollView conflict
                 itemCount: tags.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 8),
+                separatorBuilder: (_, _) => const SizedBox(height: 8),
                 itemBuilder: (context, index) {
                   final tag = tags[index];
                   return _TagItem(tag: tag, isAdmin: isAdmin);
@@ -54,6 +55,51 @@ class TagSidebar extends ConsumerWidget {
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (err, stack) => Text('Error: $err'),
             ),
+          ),
+          const SizedBox(height: 16),
+          // Saved Posts Button
+          Consumer(
+            builder: (context, ref, child) {
+              final selectedTag = ref.watch(selectedTagProvider);
+              final isSavedSelected = selectedTag == 'SAVED';
+
+              return InkWell(
+                onTap: () {
+                  if (isSavedSelected) {
+                    ref.read(selectedTagProvider.notifier).setTag(null);
+                  } else {
+                    ref.read(selectedTagProvider.notifier).setTag('SAVED');
+                  }
+                },
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                  decoration: BoxDecoration(
+                    color: isSavedSelected ? colorScheme.primary : colorScheme.surface,
+                    border: Border.all(color: colorScheme.onSurface.withValues(alpha: 0.2)),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.bookmark_outline,
+                        size: 18,
+                        color: isSavedSelected ? colorScheme.onPrimary : colorScheme.onSurface,
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        'Saved',
+                        style: GoogleFonts.spaceMono(
+                          fontSize: 14,
+                          color: isSavedSelected ? colorScheme.onPrimary : colorScheme.onSurface,
+                          fontWeight: isSavedSelected ? FontWeight.bold : FontWeight.normal,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
           ),
           if (isAdmin) ...[
             const SizedBox(height: 16),
@@ -155,7 +201,7 @@ class _TagItem extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
               decoration: BoxDecoration(
                 color: isSelected ? colorScheme.primary : colorScheme.surface,
-                border: Border.all(color: colorScheme.onSurface.withOpacity(0.2)),
+                border: Border.all(color: colorScheme.onSurface.withValues(alpha: 0.2)),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(

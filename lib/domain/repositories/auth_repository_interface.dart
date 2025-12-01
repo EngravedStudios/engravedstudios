@@ -1,4 +1,4 @@
-import '../../models/user_model.dart';
+import '../entities/user.dart';
 
 abstract class IAuthRepository {
   Future<AppUser?> getCurrentUser();
@@ -11,5 +11,6 @@ abstract class IAuthRepository {
   Future<void> updateEmail({required String email, required String password});
   Future<void> createVerification({required String url});
   Future<void> updatePrefs(Map<String, dynamic> prefs);
+  Future<Map<String, dynamic>> getPrefs();
   Future<void> deleteAccount();
 }

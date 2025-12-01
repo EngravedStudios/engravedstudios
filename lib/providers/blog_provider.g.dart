@@ -6,7 +6,7 @@ part of 'blog_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$blogRepositoryHash() => r'68252c7ca2e806a35bf8dfb08c6b55500eb42552';
+String _$blogRepositoryHash() => r'4e12f027dbab8f6115fc222db1e7c84c24ce28ee';
 
 /// See also [blogRepository].
 @ProviderFor(blogRepository)
@@ -40,7 +40,25 @@ final blogListProvider = AutoDisposeFutureProvider<List<BlogPost>>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef BlogListRef = AutoDisposeFutureProviderRef<List<BlogPost>>;
-String _$filteredBlogListHash() => r'8eac76169e696f9a3ba29185a6c244d083c47dc5';
+String _$visibleBlogListHash() => r'4d097c1e3123f7434744e599744470a04d27a000';
+
+/// See also [visibleBlogList].
+@ProviderFor(visibleBlogList)
+final visibleBlogListProvider =
+    AutoDisposeFutureProvider<List<BlogPost>>.internal(
+      visibleBlogList,
+      name: r'visibleBlogListProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$visibleBlogListHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef VisibleBlogListRef = AutoDisposeFutureProviderRef<List<BlogPost>>;
+String _$filteredBlogListHash() => r'4b7a0de0c0c5ba317880ec5aacf00ff331215804';
 
 /// See also [filteredBlogList].
 @ProviderFor(filteredBlogList)
@@ -212,5 +230,22 @@ final selectedTagProvider =
     );
 
 typedef _$SelectedTag = AutoDisposeNotifier<String?>;
+
+String _$searchQueryHash() => r'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0';
+
+/// See also [SearchQuery].
+@ProviderFor(SearchQuery)
+final searchQueryProvider =
+    AutoDisposeNotifierProvider<SearchQuery, String>.internal(
+      SearchQuery.new,
+      name: r'searchQueryProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$searchQueryHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+typedef _$SearchQuery = AutoDisposeNotifier<String>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

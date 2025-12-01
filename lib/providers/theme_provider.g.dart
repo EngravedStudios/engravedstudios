@@ -25,7 +25,7 @@ final currentThemeSchemaProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef CurrentThemeSchemaRef = AutoDisposeProviderRef<AppThemeColorSchema>;
-String _$themeNotifierHash() => r'68caed1bddf0bf5a91670e865370db2fc5f24e2d';
+String _$themeNotifierHash() => r'28b08983f3758c4f22458eaa29d2406c56df22fd';
 
 /// See also [ThemeNotifier].
 @ProviderFor(ThemeNotifier)

@@ -1,8 +1,8 @@
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/enums.dart';
 import '../../services/appwrite_service.dart';
-import '../../models/user_model.dart';
-import '../interfaces/auth_repository_interface.dart';
+import '../../domain/entities/user.dart';
+import '../../domain/repositories/auth_repository_interface.dart';
 
 class AuthRepository implements IAuthRepository {
   final AppwriteService _appwriteService;
@@ -113,6 +113,12 @@ class AuthRepository implements IAuthRepository {
     final newPrefs = Map<String, dynamic>.from(currentPrefs.data);
     newPrefs.addAll(prefs);
     await _appwriteService.account.updatePrefs(prefs: newPrefs);
+  }
+
+  @override
+  Future<Map<String, dynamic>> getPrefs() async {
+    final prefs = await _appwriteService.account.getPrefs();
+    return prefs.data;
   }
 
   @override

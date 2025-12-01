@@ -12,7 +12,9 @@ class SettingsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentThemeType = ref.watch(themeNotifierProvider).valueOrNull ?? AppThemeType.defaultLight;
+    final currentThemeType =
+        ref.watch(themeNotifierProvider).valueOrNull ??
+        AppThemeType.defaultLight;
     final theme = Theme.of(context);
     final user = ref.watch(authStateProvider).valueOrNull;
 
@@ -49,7 +51,9 @@ class SettingsScreen extends ConsumerWidget {
               const SizedBox(height: 16),
               Card(
                 elevation: 0,
-                color: theme.colorScheme.surfaceVariant.withOpacity(0.3),
+                color: theme.colorScheme.surfaceContainerHighest.withValues(
+                  alpha: 0.3,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                   side: BorderSide(color: theme.colorScheme.outlineVariant),
@@ -57,37 +61,44 @@ class SettingsScreen extends ConsumerWidget {
                 child: Column(
                   children: AppThemeType.values.map((type) {
                     final isSelected = currentThemeType == type;
-                    return RadioListTile<AppThemeType>(
-                      value: type,
+                    return RadioGroup(
                       groupValue: currentThemeType,
                       onChanged: (value) {
-                        if (value != null) {
-                          ref.read(themeNotifierProvider.notifier).setTheme(value);
-                        }
-                      },
-                      title: Text(
-                        type.displayName,
-                        style: GoogleFonts.inter(
-                          fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                          color: theme.colorScheme.onSurface,
+                          if (value != null) {
+                            ref
+                                .read(themeNotifierProvider.notifier)
+                                .setTheme(value);
+                          }
+                        },
+                      child: RadioListTile<AppThemeType>(
+                        value: type,
+                        title: Text(
+                          type.displayName,
+                          style: GoogleFonts.inter(
+                            fontWeight: isSelected
+                                ? FontWeight.w600
+                                : FontWeight.normal,
+                            color: theme.colorScheme.onSurface,
+                          ),
                         ),
-                      ),
-                      activeColor: theme.colorScheme.primary,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        activeColor: theme.colorScheme.primary,
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 4,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                       ),
                     );
                   }).toList(),
                 ),
               ),
-              
+
               const SizedBox(height: 32),
 
               // User Settings Section (if logged in)
-              if (user != null) ...[
-                const UserSettingsTab(),
-              ],
+              if (user != null) ...[const UserSettingsTab()],
             ],
           ),
         ),

@@ -1,15 +1,19 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import '../models/tag_model.dart';
-import '../repositories/interfaces/tag_repository_interface.dart';
+import '../domain/entities/tag.dart';
+import '../domain/repositories/tag_repository_interface.dart';
 import '../repositories/implementations/tag_repository.dart';
-import '../providers/auth_provider.dart';
+import '../data/datasources/remote/appwrite_datasource.dart';
+import '../core/logging/logger_provider.dart';
+
 
 part 'tag_provider.g.dart';
 
 @riverpod
-ITagRepository tagRepository(TagRepositoryRef ref) {
-  final appwriteService = ref.watch(appwriteServiceProvider);
-  return TagRepository(appwriteService);
+ITagRepository tagRepository(Ref ref) {
+  final datasource = ref.watch(appwriteDatasourceProvider);
+  final logger = ref.watch(appLoggerProvider);
+  return TagRepository(datasource, logger);
 }
 
 @riverpod

@@ -1,4 +1,4 @@
-import '../../models/tag_model.dart';
+import '../entities/tag.dart';
 
 abstract class ITagRepository {
   Future<List<Tag>> getTags();

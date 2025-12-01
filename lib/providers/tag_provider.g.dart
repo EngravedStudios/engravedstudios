@@ -23,7 +23,7 @@ final tagRepositoryProvider = AutoDisposeProvider<ITagRepository>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef TagRepositoryRef = AutoDisposeProviderRef<ITagRepository>;
-String _$tagListHash() => r'ac0842b980fb3fad5601e323fa2248e9501688bf';
+String _$tagListHash() => r'a0d36cb5a45319a39afda10537b82f7ec7f5439a';
 
 /// See also [TagList].
 @ProviderFor(TagList)

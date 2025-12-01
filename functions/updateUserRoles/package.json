@@ -1,0 +1,19 @@
+{
+    "name": "updateUserRoles",
+    "description": "Update user team memberships (roles) with admin authentication",
+    "runtime": "node-18.0",
+    "entrypoint": "src/main.js",
+    "execute": [],
+    "events": [],
+    "schedule": "",
+    "timeout": 15,
+    "enabled": true,
+    "logging": true,
+    "scopes": [
+        "users.read",
+        "teams.read",
+        "teams.write",
+        "databases.read",
+        "databases.write"
+    ]
+}

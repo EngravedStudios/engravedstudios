@@ -9,10 +9,10 @@ class BlogPost {
   final String subtitle;
   final String content;
   final String authorName;
+  final String authorId; // New field
   final String authorAvatarUrl;
   final DateTime publishDate;
   final int readTimeMinutes;
-  final int clapCount;
   final List<String> tags;
   final String? imageUrl;
   final bool isPublished;
@@ -24,10 +24,10 @@ class BlogPost {
     required this.subtitle,
     required this.content,
     required this.authorName,
+    required this.authorId, // New field
     required this.authorAvatarUrl,
     required this.publishDate,
     required this.readTimeMinutes,
-    required this.clapCount,
     required this.tags,
     this.imageUrl,
     required this.isPublished,
@@ -56,13 +56,13 @@ class BlogPost {
       id: map['\$id'] ?? '', // Appwrite Document ID
       postId: map['postId'] ?? 0,
       title: map['title'] ?? '',
-      subtitle: map['subtitle'] ?? '', // Not in DB, default empty
+      subtitle: map['subtitle'] ?? '',
       content: map['content'] ?? '',
       authorName: map['authorName'] ?? '',
-      authorAvatarUrl: map['authorAvatarUrl'] ?? '', // Not in DB, default empty
+      authorId: map['authorId']?.toString() ?? '', // Handle int or String safely
+      authorAvatarUrl: map['authorAvatarUrl'] ?? '', 
       publishDate: DateTime.tryParse(map['creationDate'] ?? '') ?? DateTime.now(),
-      readTimeMinutes: map['readTimeMinutes'] ?? 5, // Not in DB, default 5
-      clapCount: map['clapCount'] ?? 0, // Not in DB, default 0
+      readTimeMinutes: map['readTimeMinutes'] ?? 1, // Use database value, default 1 if missing
       tags: parsedTags,
       imageUrl: map['imageUrl'], // Not in DB, default null
       isPublished: map['isPublished'] ?? true,
@@ -73,9 +73,12 @@ class BlogPost {
     return {
       'postId': postId,
       'title': title,
+      'subtitle': subtitle,
       'content': content,
       'authorName': authorName,
+      'authorId': authorId,
       'creationDate': publishDate.toIso8601String(),
+      'readTimeMinutes': readTimeMinutes,
       'isPublished': isPublished,
     };
   }
@@ -87,10 +90,10 @@ class BlogPost {
     String? subtitle,
     String? content,
     String? authorName,
+    String? authorId, // New field
     String? authorAvatarUrl,
     DateTime? publishDate,
     int? readTimeMinutes,
-    int? clapCount,
     List<String>? tags,
     String? imageUrl,
     bool? isPublished,
@@ -102,10 +105,10 @@ class BlogPost {
       subtitle: subtitle ?? this.subtitle,
       content: content ?? this.content,
       authorName: authorName ?? this.authorName,
+      authorId: authorId ?? this.authorId, // New field
       authorAvatarUrl: authorAvatarUrl ?? this.authorAvatarUrl,
       publishDate: publishDate ?? this.publishDate,
       readTimeMinutes: readTimeMinutes ?? this.readTimeMinutes,
-      clapCount: clapCount ?? this.clapCount,
       tags: tags ?? this.tags,
       imageUrl: imageUrl ?? this.imageUrl,
       isPublished: isPublished ?? this.isPublished,
@@ -123,10 +126,10 @@ class BlogPost {
       other.subtitle == subtitle &&
       other.content == content &&
       other.authorName == authorName &&
+      other.authorId == authorId && // New field
       other.authorAvatarUrl == authorAvatarUrl &&
       other.publishDate == publishDate &&
       other.readTimeMinutes == readTimeMinutes &&
-      other.clapCount == clapCount &&
       listEquals(other.tags, tags) &&
       other.imageUrl == imageUrl &&
       other.isPublished == isPublished;
@@ -140,10 +143,10 @@ class BlogPost {
       subtitle.hashCode ^
       content.hashCode ^
       authorName.hashCode ^
+      authorId.hashCode ^ // New field
       authorAvatarUrl.hashCode ^
       publishDate.hashCode ^
       readTimeMinutes.hashCode ^
-      clapCount.hashCode ^
       tags.hashCode ^
       imageUrl.hashCode ^
       isPublished.hashCode;
