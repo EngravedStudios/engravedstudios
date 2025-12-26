@@ -28,7 +28,7 @@ class DevLogSection extends ConsumerWidget {
                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
                child: Row(
                  children: [
-                   Text("> BLOG", style: GameHUDTextStyles.titleLarge),
+                   Text("> Dev-Log", style: GameHUDTextStyles.titleLarge),
                    const SizedBox(width: 8),
                    Container(
                      width: 16, height: 32, 
