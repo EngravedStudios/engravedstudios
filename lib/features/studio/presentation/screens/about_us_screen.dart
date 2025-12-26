@@ -161,7 +161,7 @@ class AboutUsScreen extends ConsumerWidget {
                         ),
                         const SizedBox(height: 16),
                         Text(
-                          "Musterstraße 123\n10115 Berlin\nDeutschland",
+                          "Musterstraße 123\n48159 Muenster\nDeutschland",
                           style: GameHUDTextStyles.terminalText,
                           textAlign: TextAlign.center,
                         ),
@@ -188,7 +188,7 @@ class AboutUsScreen extends ConsumerWidget {
                         ),
                         const SizedBox(height: 24),
                         Text(
-                          "COMMERCIAL_REGISTER: HRB 123456 B\nREGISTER_COURT: Amtsgericht Charlottenburg\nVAT_ID: DE 123 456 789",
+                          "COMMERCIAL_REGISTER: HRB 123456 B\nREGISTER_COURT: Amtsgericht Muenster\nVAT_ID: DE 123 456 789",
                           style: GameHUDTextStyles.codeText.copyWith(fontSize: 10, color: nbt.textColor.withOpacity(0.7)),
                           textAlign: TextAlign.center,
                         ),
