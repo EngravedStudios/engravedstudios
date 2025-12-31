@@ -1,12 +1,12 @@
 {
-    "name": "engravedstudios",
-    "short_name": "engravedstudios",
+    "name": "Engraved Studios",
+    "short_name": "Engraved",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
-    "orientation": "portrait-primary",
+    "background_color": "#0A0A0A",
+    "theme_color": "#C6FF00",
+    "description": "Engraved Studios - Independent Game Development",
+    "orientation": "any",
     "prefer_related_applications": false,
     "icons": [
         {

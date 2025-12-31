@@ -5,7 +5,9 @@ import 'package:engravedstudios/features/games/games_gallery.dart';
 import 'package:engravedstudios/features/hero/hero_section.dart';
 import 'package:engravedstudios/features/home/presentation/controllers/home_scroll_controller.dart';
 import 'package:engravedstudios/features/studio/presentation/studio_section.dart';
+import 'package:engravedstudios/shared/widgets/engraved_footer.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -16,11 +18,19 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final _scrollController = HomeScrollController.instance;
+  late final ScrollController _mainScrollController;
 
   @override
   void initState() {
     super.initState();
+    _mainScrollController = ScrollController();
     _executePendingScrollIfNeeded();
+  }
+  
+  @override
+  void dispose() {
+    _mainScrollController.dispose();
+    super.dispose();
   }
   
   void _executePendingScrollIfNeeded() {
@@ -57,9 +67,10 @@ class _HomeScreenState extends State<HomeScreen> {
           child: MouseRegion(
             cursor: SystemMouseCursors.none,
             child: CustomScrollView(
+          controller: _mainScrollController,
           slivers: [
             // 1. HERO SECTION
-            const HeroSection(),
+            HeroSection(scrollController: _mainScrollController),
             
             // 2. GAMES GALLERY - with scroll key
             SliverToBoxAdapter(
@@ -86,20 +97,8 @@ class _HomeScreenState extends State<HomeScreen> {
             const ContactSection(),
             
             // 6. FOOTER
-            SliverToBoxAdapter(
-              child: Container(
-                height: 120,
-                decoration: const BoxDecoration(
-                  color: GameHUDColors.hardBlack,
-                  border: Border(top: BorderSide(width: 4, color: GameHUDColors.neonLime)),
-                ),
-                child: Center(
-                  child: Text(
-                    "© 2025 ENGRAVED STUDIOS. ALL SYSTEMS NORMAL.",
-                    style: GameHUDTextStyles.terminalText.copyWith(color: GameHUDColors.paperWhite),
-                  ),
-                ),
-              ),
+            const SliverToBoxAdapter(
+              child: EngravedFooter(),
             ),
           ],
         ), // CustomScrollView

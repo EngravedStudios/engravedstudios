@@ -56,41 +56,106 @@ class _ThemeToggleState extends ConsumerState<ThemeToggle> with SingleTickerProv
     final nbt = context.nbt; // Dynamic access
 
     return MouseRegion(
-      onEnter: (_) => CursorController.instance.setHover(),
-      onExit: (_) => CursorController.instance.setDefault(),
-      cursor: SystemMouseCursors.none,
+      onEnter: (_) {
+        setState(() {}); // Rebuild for hover state if we tracked it, but we can rely on AnimatedContainer if using a local var. 
+        // Oh wait, ThemeToggle doesn't track hover state in a variable. Let's add it.
+        CursorController.instance.setHover();
+      },
+      onExit: (_) {
+        CursorController.instance.setDefault();
+      },
+      // We need to track hover state locally for the animation logic
+      // Let's wrap in HoverableMixin-like logic or just add a bool. 
+      // Since we can't easily add a mixin to an existing State class without changing the file structure significantly,
+      // let's just use MouseRegion's onEnter/Exit with a local state variable.
+      child: _ThemeToggleBtn(
+        onTap: _onTap, 
+        isDark: isDark, 
+        controller: _controller
+      ),
+    );
+  }
+}
+
+class _ThemeToggleBtn extends StatefulWidget {
+  final VoidCallback onTap;
+  final bool isDark;
+  final AnimationController controller;
+
+  const _ThemeToggleBtn({
+    required this.onTap, 
+    required this.isDark,
+    required this.controller,
+  });
+
+  @override
+  State<_ThemeToggleBtn> createState() => _ThemeToggleBtnState();
+}
+
+class _ThemeToggleBtnState extends State<_ThemeToggleBtn> {
+  bool _isHovered = false;
+  bool _isPressed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final nbt = context.nbt;
+    
+    // Logic matching NeubrutalistSquare
+    double translateX = 0;
+    double translateY = 0;
+    double shadowX = 4; // Base shadow
+    double shadowY = 4;
+
+    if (_isPressed) {
+       translateX = 0;
+       translateY = 0;
+       shadowX = 0;
+       shadowY = 0;
+    } else if (_isHovered) {
+       translateX = -4; 
+       translateY = -4; 
+       shadowX = 10; // 4 (base) + 6 (pop)
+       shadowY = 10;
+    } else {
+       // Idle
+       translateX = 0;
+       translateY = 0;
+       shadowX = 4;
+       shadowY = 4;
+    }
+
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
       child: GestureDetector(
         onTapDown: (_) => setState(() => _isPressed = true),
         onTapUp: (_) => setState(() => _isPressed = false),
         onTapCancel: () => setState(() => _isPressed = false),
-        onTap: _onTap,
+        onTap: widget.onTap,
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 100),
+          duration: const Duration(milliseconds: 150),
           width: 48,
           height: 48,
           padding: const EdgeInsets.all(8),
-          transform: Matrix4.translationValues(
-              _isPressed ? 2 : 0, 
-              _isPressed ? 2 : 0, 
-              0,
-          ),
+          transform: Matrix4.translationValues(translateX, translateY, 0),
           decoration: BoxDecoration(
             color: nbt.surface,
             border: Border.all(width: 3, color: nbt.borderColor),
-            boxShadow: _isPressed 
-              ? [] 
-              : [BoxShadow(color: nbt.shadowColor, offset: const Offset(4, 4))],
+            boxShadow: [
+              BoxShadow(
+                color: nbt.shadowColor, 
+                offset: Offset(shadowX, shadowY),
+                blurRadius: 0
+              )
+            ],
           ),
           child: AnimatedBuilder(
-            animation: _controller,
+            animation: widget.controller,
             builder: (context, child) {
                return Transform.rotate(
-                 angle: _controller.value * pi,
+                 angle: widget.controller.value * pi,
                  child: Icon(
-                   isDark ? Icons.light_mode : Icons.dark_mode_outlined, // Icon represents target or current?
-                   // Usually showing "Moon" means "Click for Dark". Showing "Sun" means "Click for Light".
-                   // Let's assume icon reflects CURRENT state for clarity in toggle, or potential action.
-                   // Let's do: Show SUN in Dark Mode, Show MOON in Light Mode.
+                   widget.isDark ? Icons.light_mode : Icons.dark_mode_outlined,
                    color: nbt.primaryAccent,
                    size: 24,
                  ),

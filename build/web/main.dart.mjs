@@ -410,6 +410,7 @@ class CompiledApp {
       _1346: (x0,x1,x2,x3) => x0.addEventListener(x1,x2,x3),
       _1347: (x0,x1,x2,x3) => x0.removeEventListener(x1,x2,x3),
       _1348: (x0,x1) => x0.createElement(x1),
+      _1355: (x0,x1,x2,x3) => x0.open(x1,x2,x3),
       _1363: () => new AudioContext(),
       _1364: (x0,x1) => x0.createMediaElementSource(x1),
       _1365: x0 => x0.createStereoPanner(),
@@ -440,6 +441,18 @@ class CompiledApp {
       _1382: () => typeof dartUseDateNowForTicks !== "undefined",
       _1383: () => 1000 * performance.now(),
       _1384: () => Date.now(),
+      _1385: () => {
+        // On browsers return `globalThis.location.href`
+        if (globalThis.location != null) {
+          return globalThis.location.href;
+        }
+        return null;
+      },
+      _1386: () => {
+        return typeof process != "undefined" &&
+               Object.prototype.toString.call(process) == "[object process]" &&
+               process.platform == "win32"
+      },
       _1387: () => new WeakMap(),
       _1388: (map, o) => map.get(o),
       _1389: (map, o, v) => map.set(o, v),
@@ -465,6 +478,7 @@ class CompiledApp {
       _1422: (a, i) => a.splice(i, 1),
       _1423: (a, s) => a.join(s),
       _1424: (a, s, e) => a.slice(s, e),
+      _1426: (a, b) => a == b ? 0 : (a > b ? 1 : -1),
       _1427: a => a.length,
       _1429: (a, i) => a[i],
       _1430: (a, i, v) => a[i] = v,

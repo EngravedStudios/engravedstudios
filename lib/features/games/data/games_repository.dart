@@ -26,6 +26,8 @@ class GamesRepository {
            "https://placehold.co/800x450/1a1a1a/00FF9C?text=Combat+System",
            "https://placehold.co/800x450/1a1a1a/00FF9C?text=Character+Art"
         ],
+        steamAppId: "123456", // Mock ID
+        itchUrl: "https://itch.io",
       ),
       GameModel(
         id: '2',
@@ -60,6 +62,7 @@ class GamesRepository {
            "https://placehold.co/1200x600/1a1a1a/FF2A2A?text=Neon+City",
            "https://placehold.co/1200x600/1a1a1a/FF2A2A?text=Weapon+Showcase"
         ],
+        steamAppId: "105600", // Terraria (for testing)
       ),
        GameModel(
         id: '4',

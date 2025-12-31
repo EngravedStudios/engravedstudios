@@ -1,5 +1,6 @@
 import 'package:engravedstudios/core/theme/design_system.dart';
 import 'package:engravedstudios/features/games/domain/game_model.dart';
+import 'package:engravedstudios/features/games/presentation/widgets/store_button.dart';
 import 'package:engravedstudios/shared/widgets/status_badge.dart';
 import 'package:flutter/material.dart';
 
@@ -52,18 +53,23 @@ class HudSidebar extends StatelessWidget {
           const Spacer(),
           
           // Action Button (Placeholder)
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            decoration: BoxDecoration(
-              color: game.accentColor,
+          // Action Buttons
+          if (game.steamAppId != null) ...[
+            StoreButton(
+              appId: game.steamAppId!,
+              url: 'https://store.steampowered.com/app/${game.steamAppId}',
+              label: "STEAM",
             ),
-            alignment: Alignment.center,
-            child: Text(
-              "ACCESS BUILD",
-              style: GameHUDTextStyles.buttonText.copyWith(color: GameHUDColors.hardBlack),
+            const SizedBox(height: 12),
+          ],
+          if (game.itchUrl != null) ...[
+             StoreButton(
+              appId: '', // No API for Itch yet
+              url: game.itchUrl!,
+              label: "ITCH.IO",
+              color: const Color(0xFFFA5C5C), // Itch Red
             ),
-          ),
+          ],
         ],
       ),
     );

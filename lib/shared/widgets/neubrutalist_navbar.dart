@@ -2,7 +2,7 @@ import 'package:engravedstudios/features/home/presentation/controllers/home_scro
 import 'package:engravedstudios/core/input/cursor_controller.dart';
 import 'package:engravedstudios/core/audio/sound_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter/gestures.dart'; // For PointerEvents
+import 'package:flutter/gestures.dart';
 import 'package:engravedstudios/core/theme/design_system.dart';
 import 'package:engravedstudios/core/utils/responsive_utils.dart';
 import 'package:flutter/material.dart';
@@ -14,11 +14,8 @@ class NeubrutalistNavbar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // On mobile, maybe we show a condensed version or just the logo?
-    // For now, let's implement the desktop "floating shell".
     final isMobile = ResponsiveUtils.isMobile(context);
 
-    // Padding for the floating effect
     return Padding(
       padding: EdgeInsets.symmetric(
         horizontal: isMobile ? 16.0 : 48.0, 
@@ -27,7 +24,6 @@ class NeubrutalistNavbar extends ConsumerWidget {
       child: Center(
         heightFactor: 1.0, 
         child: Container(
-          // Allow width to shrinkwrap content on desktop, expand on mobile?
           constraints: const BoxConstraints(maxWidth: 800),
           alignment: Alignment.center,
           child: IntrinsicHeight(
@@ -48,10 +44,10 @@ class NeubrutalistNavbar extends ConsumerWidget {
                            context.go('/');
                          }
                     },
-                    isLogo: true,
+                    buttonType: NavButtonType.logo,
                   ),
                   
-                  const SizedBox(width: 32), // Spacer replacement
+                  const SizedBox(width: 32),
                   
                   if (!isMobile) ...[
                     _NavbarButton(
@@ -65,6 +61,7 @@ class NeubrutalistNavbar extends ConsumerWidget {
                            context.go('/');
                          }
                       },
+                      buttonType: NavButtonType.middle,
                     ),
                     const SizedBox(width: 16),
                     _NavbarButton(
@@ -78,11 +75,13 @@ class NeubrutalistNavbar extends ConsumerWidget {
                           context.go('/');
                         }
                       },
+                      buttonType: NavButtonType.middle,
                     ),
                     const SizedBox(width: 16),
                     _NavbarButton(
                       label: "ABOUT US",
                       onTap: () => context.go('/about'),
+                      buttonType: NavButtonType.middle,
                     ),
                     const SizedBox(width: 32),
                   ],
@@ -99,7 +98,7 @@ class NeubrutalistNavbar extends ConsumerWidget {
                          context.go('/');
                        }
                     }, 
-                    isPrimary: true,
+                    buttonType: NavButtonType.primary,
                   ),
                 ],
               ),
@@ -111,17 +110,17 @@ class NeubrutalistNavbar extends ConsumerWidget {
   }
 }
 
+enum NavButtonType { logo, middle, primary }
+
 class _NavbarButton extends ConsumerStatefulWidget {
   final String label;
   final VoidCallback onTap;
-  final bool isLogo;
-  final bool isPrimary;
+  final NavButtonType buttonType;
 
   const _NavbarButton({
     required this.label,
     required this.onTap,
-    this.isLogo = false,
-    this.isPrimary = false,
+    required this.buttonType,
   });
 
   @override
@@ -145,19 +144,83 @@ class _NavbarButtonState extends ConsumerState<_NavbarButton> {
   @override
   Widget build(BuildContext context) {
     final nbt = context.nbt;
-    final baseOffset = widget.isPrimary || widget.isLogo ? 4.0 : 0.0;
-    // Lift on hover (increase offset), depress on press (0 offset)
-    final double? currentOffset = _isPressed 
-        ? 0 
-        : (_isHovered ? baseOffset + 2 : baseOffset);
-        
-    final Color bgColor = widget.isPrimary 
-        ? nbt.primaryAccent 
-        : (widget.isLogo ? nbt.borderColor : Colors.transparent);
+    final isMiddle = widget.buttonType == NavButtonType.middle;
+    final isLogo = widget.buttonType == NavButtonType.logo;
+    final isPrimary = widget.buttonType == NavButtonType.primary;
     
-    final Color textColor = widget.isPrimary 
-        ? nbt.shadowColor 
-        : (widget.isLogo ? nbt.primaryAccent : nbt.textColor);
+    // Animation values (ThemeToggle style for logo/primary)
+    double translateX = 0;
+    double translateY = 0;
+    double shadowX = 4;
+    double shadowY = 4;
+
+    if (isMiddle) {
+      // Middle buttons: translate on hover (transform doesn't affect layout)
+      shadowX = 0;
+      shadowY = 0;
+      if (_isHovered && !_isPressed) {
+        translateX = -4;
+        translateY = -4;
+      }
+    } else {
+      // Logo and Primary: ThemeToggle style animation
+      if (_isPressed) {
+         translateX = 0;
+         translateY = 0;
+         shadowX = 0;
+         shadowY = 0;
+      } else if (_isHovered) {
+         translateX = -4;
+         translateY = -4;
+         shadowX = 10;
+         shadowY = 10;
+      } else {
+         translateX = 0;
+         translateY = 0;
+         shadowX = 4;
+         shadowY = 4;
+      }
+    }
+    
+    // Colors
+    Color bgColor;
+    Color textColor;
+    
+    if (isPrimary) {
+      bgColor = nbt.primaryAccent;
+      textColor = nbt.shadowColor;
+    } else if (isLogo) {
+      bgColor = nbt.borderColor;
+      textColor = nbt.primaryAccent;
+    } else {
+      // Middle buttons: white background for readability
+      bgColor = GameHUDColors.paperWhite;
+      textColor = nbt.textColor;
+    }
+    
+    // Border - ALWAYS present to prevent layout shift, just change color
+    Border border;
+    if (isPrimary || isLogo) {
+      border = Border.all(width: 3, color: nbt.borderColor);
+    } else {
+      // Middle buttons: always have border, transparent when not hovered
+      border = Border.all(
+        width: 2, 
+        color: _isHovered ? nbt.borderColor : Colors.transparent,
+      );
+    }
+    
+    // Shadow (only for logo and primary)
+    List<BoxShadow>? boxShadow;
+    if (!isMiddle) {
+      boxShadow = [
+        BoxShadow(
+          color: nbt.shadowColor,
+          offset: Offset(shadowX, shadowY),
+          blurRadius: 0,
+        )
+      ];
+    }
 
     return MouseRegion(
       onEnter: _onEnter,
@@ -172,35 +235,19 @@ class _NavbarButtonState extends ConsumerState<_NavbarButton> {
           widget.onTap();
         },
         child: AnimatedContainer(
-          duration: 100.ms,
-          transform: Matrix4.translationValues(
-             -(_isPressed ? 0.0 : (_isHovered ? 2.0 : 0.0)),
-             -(_isPressed ? 0.0 : (_isHovered ? 2.0 : 0.0)), 
-             0.0
+          duration: const Duration(milliseconds: 150),
+          transform: Matrix4.translationValues(translateX, translateY, 0.0),
+          decoration: BoxDecoration(
+            color: bgColor,
+            border: border,
+            boxShadow: boxShadow,
           ),
-          child: Container(
-            decoration: BoxDecoration(
-              color: bgColor,
-              border: (widget.isPrimary || widget.isLogo) 
-                  ? Border.all(width: 3, color: nbt.borderColor)
-                  : (_isHovered ? Border.all(width: 3, color: nbt.borderColor) : null), 
-              boxShadow: (widget.isPrimary || widget.isLogo)
-                  ? [
-                      BoxShadow(
-                        color: nbt.shadowColor,
-                        offset: Offset(currentOffset!, currentOffset),
-                        blurRadius: 0,
-                      )
-                    ]
-                  : null,
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-            child: Text(
-              widget.label,
-              style: GameHUDTextStyles.terminalText.copyWith(
-                fontWeight: FontWeight.bold,
-                color: textColor,
-              ),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          child: Text(
+            widget.label,
+            style: GameHUDTextStyles.terminalText.copyWith(
+              fontWeight: FontWeight.bold,
+              color: textColor,
             ),
           ),
         ),

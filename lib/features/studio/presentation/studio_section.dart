@@ -1,4 +1,5 @@
 import 'package:engravedstudios/core/theme/design_system.dart';
+import 'package:engravedstudios/core/utils/responsive_utils.dart';
 import 'package:engravedstudios/features/studio/data/team_data.dart';
 import 'package:engravedstudios/features/studio/presentation/blueprint_grid_painter.dart';
 import 'package:engravedstudios/features/studio/presentation/widgets/team_card.dart';
@@ -13,6 +14,9 @@ class StudioSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final team = ref.watch(teamMembersProvider);
     
+    final isMobile = ResponsiveUtils.isMobile(context);
+    final manifestoFontSize = context.responsive<double>(32, 48, 40);
+
     return SliverToBoxAdapter(
       child: Stack(
         children: [
@@ -26,7 +30,7 @@ class StudioSection extends ConsumerWidget {
           Center(
             child: Container(
               constraints: const BoxConstraints(maxWidth: 1000),
-              padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 24),
+              padding: EdgeInsets.symmetric(vertical: 80, horizontal: isMobile ? 16 : 24),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -40,7 +44,7 @@ class StudioSection extends ConsumerWidget {
                     "WE DON'T JUST BUILD GAMES.\nWE ENGRAVE EXPERIENCES\nINTO THE DIGITAL BEDROCK.",
                     textAlign: TextAlign.center,
                     style: GameHUDTextStyles.titleLarge.copyWith(
-                      fontSize: 48,
+                      fontSize: manifestoFontSize,
                       height: 1.1,
                       color: Colors.transparent,
                       shadows: [],

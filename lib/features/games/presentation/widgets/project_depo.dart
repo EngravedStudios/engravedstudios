@@ -1,5 +1,7 @@
 import 'package:engravedstudios/core/theme/design_system.dart';
 import 'package:engravedstudios/features/games/domain/game_model.dart';
+import 'package:engravedstudios/features/games/presentation/widgets/store_button.dart';
+import 'package:engravedstudios/features/newsletter/presentation/newsletter_signup_widget.dart';
 import 'package:flutter/material.dart';
 
 class ProjectDepo extends StatelessWidget {
@@ -15,7 +17,33 @@ class ProjectDepo extends StatelessWidget {
           padding: const EdgeInsets.all(48),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [        // Description Block
+            children: [        
+                
+        // Mobile Actions
+        if (game.steamAppId != null || game.itchUrl != null) ...[
+          Wrap(
+            spacing: 12,
+            runSpacing: 12,
+            children: [
+               if (game.steamAppId != null)
+                 StoreButton(
+                    appId: game.steamAppId!,
+                    url: 'https://store.steampowered.com/app/${game.steamAppId}',
+                    label: "STEAM",
+                 ),
+               if (game.itchUrl != null)
+                 StoreButton(
+                    appId: '', 
+                    url: game.itchUrl!,
+                    label: "ITCH.IO",
+                    color: const Color(0xFFFA5C5C),
+                 ),
+            ],
+          ),
+          const SizedBox(height: 32),
+        ],
+
+        // Description Block
         Text(
           "MISSION BRIEFING",
           style: GameHUDTextStyles.terminalText.copyWith(color: GameHUDColors.neonLime),
@@ -86,6 +114,13 @@ class ProjectDepo extends StatelessWidget {
           alignment: Alignment.center,
           child: Text("NO RECENT TRANSMISSIONS FOUND", style: GameHUDTextStyles.codeText),
         ),
+
+        const SizedBox(height: 100),
+
+        // Stay Updated
+        const NewsletterSignupWidget(),
+        
+        const SizedBox(height: 64),
 
         const SizedBox(height: 100), // Bottom padding
             ],

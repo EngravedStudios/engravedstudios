@@ -29,6 +29,8 @@ class GameModel {
     this.platforms = const ["PC"],
     this.techStack = const ["Flutter"],
     this.images = const [],
+    this.steamAppId,
+    this.itchUrl,
   });
   
   final String description;
@@ -36,4 +38,7 @@ class GameModel {
   final List<String> platforms;
   final List<String> techStack;
   final List<String> images; // URLs for parallax gallery
+  
+  final String? steamAppId;
+  final String? itchUrl;
 }

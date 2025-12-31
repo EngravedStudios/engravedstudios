@@ -2,11 +2,13 @@ import 'dart:math';
 
 import 'package:engravedstudios/core/theme/design_system.dart';
 import 'package:engravedstudios/core/utils/responsive_utils.dart';
+import 'package:engravedstudios/shared/widgets/parallax_effects.dart'; // Import Parallax
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 class HeroSection extends StatelessWidget {
-  const HeroSection({super.key});
+  final ScrollController? scrollController;
+  const HeroSection({super.key, this.scrollController});
 
   @override
   Widget build(BuildContext context) {
@@ -32,17 +34,29 @@ class HeroSection extends StatelessWidget {
             ? Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Expanded(flex: 6, child: _HeroContentLeft()),
+                  Expanded(flex: 6, child: MouseParallax(factor: 2.0, child: _HeroContentLeft())),
                   Container(width: GameHUDLayout.borderWidth, color: nbt.borderColor),
-                  Expanded(flex: 4, child: _HeroVisualRight()),
+                  Expanded(
+                    flex: 4, 
+                    child: scrollController != null 
+                        ? ScrollParallax(
+                            scrollController: scrollController!,
+                            factor: 0.15, // Subtle parallax
+                            child: MouseParallax(factor: 8.0, child: _HeroVisualRight()),
+                          )
+                        : MouseParallax(factor: 8.0, child: _HeroVisualRight()),
+                  ),
                 ],
               )
             : Column(
                 mainAxisAlignment: MainAxisAlignment.center, // Center vertically
                 children: [
                    // Navbar spacing handled by alignment/padding now
-                   Expanded(child: _HeroContentLeft()),
-                   SizedBox(height: screenHeight * 0.4, child: _HeroVisualRight()), // 40% height for visual
+                   Expanded(child: MouseParallax(factor: 1.0, child: _HeroContentLeft())),
+                   SizedBox(
+                     height: screenHeight * 0.4, 
+                     child: MouseParallax(factor: 4.0, child: _HeroVisualRight())
+                   ),
                 ],
               ),
       ),

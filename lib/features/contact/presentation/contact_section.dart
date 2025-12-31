@@ -1,7 +1,9 @@
 import 'package:engravedstudios/core/theme/design_system.dart';
+import 'package:engravedstudios/core/utils/responsive_utils.dart';
 import 'package:engravedstudios/features/contact/presentation/widgets/neubrutalist_square.dart';
 import 'package:engravedstudios/features/contact/presentation/widgets/terminal_input.dart';
 import 'package:engravedstudios/features/contact/presentation/widgets/transmission_button.dart';
+import 'package:engravedstudios/features/newsletter/presentation/newsletter_signup_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
@@ -10,10 +12,13 @@ class ContactSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = ResponsiveUtils.isMobile(context);
+    final titleFontSize = context.responsive<double>(40, 64, 48);
+
     return SliverToBoxAdapter(
       child: Container(
         color: GameHUDColors.paperWhite,
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 80),
+        padding: EdgeInsets.symmetric(horizontal: isMobile ? 16 : 24, vertical: 80),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -21,7 +26,7 @@ class ContactSection extends StatelessWidget {
             Text(
               "READY TO\nENGRAVE\nTHE FUTURE?",
               style: GameHUDTextStyles.titleLarge.copyWith(
-                fontSize: 64, // Massive
+                fontSize: titleFontSize, // Massive
                 height: 0.9,
                 color: Colors.transparent, // Outline style
                 // Provide stroke via Paint
@@ -50,6 +55,8 @@ class ContactSection extends StatelessWidget {
             
             const SizedBox(height: 120),
             
+            const SizedBox(height: 80),
+
             // Kinetic Footer
             const Divider(color: GameHUDColors.hardBlack, thickness: 4),
             const SizedBox(height: 48),
@@ -64,11 +71,21 @@ class ContactSection extends StatelessWidget {
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: const [
-                    NeubrutalistSquare(icon: Icons.discord),
+                    NeubrutalistSquare(
+                      icon: Icons.discord,
+                      url: 'https://discord.gg/FaEQNRqGKA', // Discord invite link
+                    ),
                     SizedBox(width: 16),
-                    NeubrutalistSquare(icon: Icons.code), // Github
+                    NeubrutalistSquare(
+                      icon: Icons.code, // Github
+                      url: 'https://github.com/engravedstudios', // Github link
+                    ), 
                     SizedBox(width: 16),
-                    NeubrutalistSquare(icon: Icons.alternate_email), // X / Twitter
+                    NeubrutalistSquare(
+                      icon: Icons.alternate_email, 
+                      url: 'mailto:contact@engravedstudios.com', // Placeholder 
+                      isMail: true,
+                    ), // X / Twitter removed or replaced? User asked for mail copy/opening. Let's assume alternate_email is email.
                   ],
                 ),
                 

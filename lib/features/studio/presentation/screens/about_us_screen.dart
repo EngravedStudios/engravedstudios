@@ -1,8 +1,10 @@
 import 'package:engravedstudios/core/theme/design_system.dart';
 import 'package:engravedstudios/features/studio/data/team_data.dart';
 import 'package:engravedstudios/features/studio/domain/team_model.dart';
+import 'package:engravedstudios/features/studio/presentation/widgets/flippable_team_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class AboutUsScreen extends ConsumerWidget {
   const AboutUsScreen({super.key});
@@ -56,7 +58,7 @@ class AboutUsScreen extends ConsumerWidget {
                   children: teamMembers.map((member) => SizedBox(
                     width: 350, // Fixed width for cards
                     height: 350, // Fixed height required for Spacer() inside card
-                    child: _TeamMemberCard(member: member),
+                    child: FlippableTeamCard(member: member),
                   )).toList(),
                 ),
               ),
@@ -199,70 +201,28 @@ class AboutUsScreen extends ConsumerWidget {
               ),
             ),
           ),
-
-          // Bottom Spacer
-          const SliverToBoxAdapter(child: SizedBox(height: 100)),
-        ],
-      ),
-    );
-  }
-}
-
-class _TeamMemberCard extends StatelessWidget {
-  final TeamMember member;
-  const _TeamMemberCard({required this.member});
-
-  @override
-  Widget build(BuildContext context) {
-    final nbt = context.nbt;
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: nbt.surface,
-        border: Border.all(color: nbt.textColor),
-        boxShadow: [BoxShadow(color: nbt.shadowColor, offset: const Offset(8, 8))],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-           Row(
-             children: [
-               Container(width: 64, height: 64, color: Colors.grey[800]), // Avatar Placeholder
-               const SizedBox(width: 16),
-               Expanded(
-                 child: Column(
-                   crossAxisAlignment: CrossAxisAlignment.start,
-                   children: [
-                     Text(member.name, style: GameHUDTextStyles.titleLarge.copyWith(fontSize: 18)),
-                     Text(member.role, style: GameHUDTextStyles.terminalText.copyWith(fontSize: 12)),
-                   ],
-                 ),
-               ),
-             ],
-           ),
-           const SizedBox(height: 24),
-           // Stats
-           ...member.stats.entries.map((e) => Padding(
-             padding: const EdgeInsets.only(bottom: 8.0),
-             child: Row(
-               children: [
-                 SizedBox(width: 60, child: Text(e.key, style: GameHUDTextStyles.codeText)),
-                 Expanded(
-                   child: LinearProgressIndicator(
-                     value: e.value, 
-                     backgroundColor: nbt.borderColor.withOpacity(0.2),
-                     color: nbt.primaryAccent,
+            // Press Kit Link
+            SliverToBoxAdapter(
+              child: Padding(
+                 padding: const EdgeInsets.only(bottom: 48),
+                 child: Center(
+                   child: TextButton.icon(
+                      onPressed: () => context.go('/press'),
+                      icon: Icon(Icons.download, color: nbt.primaryAccent),
+                      label: Text(
+                        "ACCESS_PRESS_KIT // MEDIA_ASSETS",
+                        style: GameHUDTextStyles.buttonText.copyWith(
+                          color: nbt.primaryAccent,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
                    ),
                  ),
-               ],
-             ),
-           )),
-           const Spacer(),
-           Container(
-             padding: const EdgeInsets.all(8),
-             color: nbt.primaryAccent.withOpacity(0.1),
-             child: Text("TRAIT: ${member.secretTrait}", style: GameHUDTextStyles.codeText),
-           ),
+              ),
+            ),
+ 
+             // Bottom Spacer
+          const SliverToBoxAdapter(child: SizedBox(height: 100)),
         ],
       ),
     );
