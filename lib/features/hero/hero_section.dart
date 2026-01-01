@@ -165,37 +165,80 @@ class _HeroVisualRight extends StatefulWidget {
 }
 
 class _HeroVisualRightState extends State<_HeroVisualRight> {
-  late YoutubePlayerController _controller;
-  late StreamSubscription _playerStateSubscription;
+  YoutubePlayerController? _controller;
+  StreamSubscription? _playerStateSubscription;
   bool _isHovered = false;
+  bool _hasError = false;
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _controller = YoutubePlayerController.fromVideoId(
-      videoId: 'Y2VYlRB6I6o',
-      autoPlay: true,
-      params: const YoutubePlayerParams(
-        mute: true,
-        showControls: false,
-        showFullscreenButton: false,
-        loop: true,
-      ),
-    );
-    
-    // Manual loop logic using the main stream
-    _playerStateSubscription = _controller.stream.listen((value) {
-      if (value.playerState == PlayerState.ended) {
-        _controller.seekTo(seconds: 0);
-        _controller.playVideo();
+    _initPlayer();
+  }
+
+  void _initPlayer() {
+    try {
+      _controller = YoutubePlayerController.fromVideoId(
+        videoId: 'Y2VYlRB6I6o',
+        autoPlay: true,
+        params: const YoutubePlayerParams(
+          mute: true,
+          showControls: false,
+          showFullscreenButton: false,
+          loop: true,
+          playsInline: true, // Important for iOS/Web
+          enableCaption: false,
+        ),
+      );
+      
+      // Listen for state changes
+      _playerStateSubscription = _controller!.stream.listen(
+        (value) {
+          // Player is ready
+          if (value.playerState == PlayerState.playing && _isLoading) {
+            if (mounted) {
+              setState(() => _isLoading = false);
+            }
+          }
+          // Manual loop
+          if (value.playerState == PlayerState.ended) {
+            _controller?.seekTo(seconds: 0);
+            _controller?.playVideo();
+          }
+        },
+        onError: (error) {
+          debugPrint('YouTube player error: $error');
+          if (mounted) {
+            setState(() {
+              _hasError = true;
+              _isLoading = false;
+            });
+          }
+        },
+      );
+
+      // Timeout for loading
+      Future.delayed(const Duration(seconds: 5), () {
+        if (mounted && _isLoading) {
+          setState(() => _isLoading = false);
+        }
+      });
+    } catch (e) {
+      debugPrint('Failed to init YouTube player: $e');
+      if (mounted) {
+        setState(() {
+          _hasError = true;
+          _isLoading = false;
+        });
       }
-    });
+    }
   }
 
   @override
   void dispose() {
-    _playerStateSubscription.cancel();
-    _controller.close();
+    _playerStateSubscription?.cancel();
+    _controller?.close();
     super.dispose();
   }
 
@@ -215,7 +258,7 @@ class _HeroVisualRightState extends State<_HeroVisualRight> {
         child: MouseRegion(
           onEnter: (_) => setState(() => _isHovered = true),
           onExit: (_) => setState(() => _isHovered = false),
-          cursor: SystemMouseCursors.click, // Indicates interactivity
+          cursor: SystemMouseCursors.click,
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 150),
             curve: Curves.easeInOut,
@@ -236,26 +279,49 @@ class _HeroVisualRightState extends State<_HeroVisualRight> {
             child: Stack(
               fit: StackFit.expand,
               children: [
-                FittedBox(
-                  fit: BoxFit.cover,
-                  child: SizedBox(
-                    width: 1600,
-                    height: 900,
-                    child: IgnorePointer(
-                      child: YoutubePlayer(
-                        controller: _controller,
-                        aspectRatio: 16/9,
+                // YouTube Player or Fallback
+                if (!_hasError && _controller != null)
+                  FittedBox(
+                    fit: BoxFit.cover,
+                    child: SizedBox(
+                      width: 1600,
+                      height: 900,
+                      child: IgnorePointer(
+                        child: YoutubePlayer(
+                          controller: _controller!,
+                          aspectRatio: 16/9,
+                        ),
+                      ),
+                    ),
+                  )
+                else
+                  // Fallback: Animated gradient or static visual
+                  _FallbackVisual(),
+
+                // Loading Indicator
+                if (_isLoading)
+                  Container(
+                    color: nbt.surface,
+                    child: Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.play_circle_outline, size: 48, color: nbt.primaryAccent),
+                          const SizedBox(height: 12),
+                          Text(
+                            "LOADING_FEED...",
+                            style: GameHUDTextStyles.terminalText.copyWith(color: nbt.textColor),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                ),
-                // Interaction Blocker / Event Capturer
+
+                // Interaction Blocker
                 Positioned.fill(
                   child: PointerInterceptor(
                     intercepting: true,
-                    child: Container(
-                      color: Colors.transparent, 
-                    ),
+                    child: Container(color: Colors.transparent),
                   ),
                 ),
               ],
@@ -265,6 +331,45 @@ class _HeroVisualRightState extends State<_HeroVisualRight> {
       ).animate(onPlay: (c) => c.repeat(reverse: true))
       .moveY(begin: -10, end: 10, duration: 2000.ms, curve: Curves.easeInOutQuad),
     );
+  }
+}
+
+/// Fallback visual when YouTube fails to load
+class _FallbackVisual extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final nbt = context.nbt;
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            nbt.primaryAccent.withOpacity(0.3),
+            nbt.surface,
+            GameHUDColors.glitchRed.withOpacity(0.2),
+          ],
+        ),
+      ),
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.videogame_asset, size: 64, color: nbt.primaryAccent),
+            const SizedBox(height: 16),
+            Text(
+              "ENGRAVED\nSTUDIOS",
+              textAlign: TextAlign.center,
+              style: GameHUDTextStyles.headlineHeavy.copyWith(
+                fontSize: 28,
+                color: nbt.textColor,
+              ),
+            ),
+          ],
+        ),
+      ),
+    ).animate(onPlay: (c) => c.repeat(reverse: true))
+    .shimmer(duration: 3000.ms, color: nbt.primaryAccent.withOpacity(0.1));
   }
 }
 
