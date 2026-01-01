@@ -22,7 +22,7 @@ class _GameDetailScreenState extends ConsumerState<GameDetailScreen> {
     final isDesktop = MediaQuery.of(context).size.width >= 1100;
 
     return Scaffold(
-      backgroundColor: context.nbt.surface,
+      backgroundColor: Colors.transparent,
       body: gamesAsync.when(
         loading: () => const Center(child: NeubrutalistLoader()),
         error: (err, s) => Center(child: Text("ERROR LOADING ARCHIVE: $err", style: GameHUDTextStyles.terminalText.copyWith(color: GameHUDColors.glitchRed))),

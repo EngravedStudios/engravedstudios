@@ -18,7 +18,7 @@ class RoadmapPage extends ConsumerWidget {
     // Let's do a vertical timeline-ish list.
 
     return Scaffold(
-      backgroundColor: nbt.surface,
+      backgroundColor: Colors.transparent,
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 48),
         child: Center(

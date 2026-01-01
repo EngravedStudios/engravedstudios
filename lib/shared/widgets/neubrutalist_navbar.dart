@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/gestures.dart';
 import 'package:engravedstudios/core/theme/design_system.dart';
 import 'package:engravedstudios/core/utils/responsive_utils.dart';
+import 'package:engravedstudios/shared/widgets/glitch_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
@@ -243,8 +244,9 @@ class _NavbarButtonState extends ConsumerState<_NavbarButton> {
             boxShadow: boxShadow,
           ),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          child: Text(
-            widget.label,
+          child: GlitchText(
+            text: widget.label,
+            isGlitching: _isHovered,
             style: GameHUDTextStyles.terminalText.copyWith(
               fontWeight: FontWeight.bold,
               color: textColor,

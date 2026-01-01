@@ -25,8 +25,8 @@ class _CursorWrapperState extends State<CursorWrapper> {
   Widget build(BuildContext context) {
     return Listener(
       // Use Listener instead of MouseRegion for lower overhead
-      onPointerHover: (event) => _position.value = event.position,
-      onPointerMove: (event) => _position.value = event.position,
+      onPointerHover: (event) => CursorController.instance.position.value = event.position,
+      onPointerMove: (event) => CursorController.instance.position.value = event.position,
       child: MouseRegion(
         cursor: SystemMouseCursors.none,
         child: RepaintBoundary(
@@ -36,7 +36,7 @@ class _CursorWrapperState extends State<CursorWrapper> {
               // Main content - completely isolated from cursor updates
               RepaintBoundary(child: widget.child),
               // Cursor overlay - uses dedicated listenable builders
-              _CursorOverlay(positionNotifier: _position),
+              _CursorOverlay(),
             ],
           ),
         ),
@@ -46,19 +46,23 @@ class _CursorWrapperState extends State<CursorWrapper> {
 }
 
 class _CursorOverlay extends StatelessWidget {
-  final ValueNotifier<Offset> positionNotifier;
-  const _CursorOverlay({required this.positionNotifier});
+  const _CursorOverlay();
 
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
-      listenable: Listenable.merge([positionNotifier, CursorController.instance]),
+      listenable: Listenable.merge([CursorController.instance.position, CursorController.instance]),
       builder: (context, _) {
-        final position = positionNotifier.value;
+        final position = CursorController.instance.position.value;
         final cursorType = CursorController.instance.type;
         final isHover = cursorType == CursorType.hover;
         final size = isHover ? 40.0 : 20.0;
 
+        final nbt = context.nbt;
+        
+        final themePrimary = Theme.of(context).colorScheme.primary;
+        final themeSurface = Theme.of(context).colorScheme.surface;
+        
         return Positioned(
           left: position.dx - size / 2,
           top: position.dy - size / 2,
@@ -68,16 +72,16 @@ class _CursorOverlay extends StatelessWidget {
               height: size,
               decoration: BoxDecoration(
                 color: isHover 
-                    ? GameHUDColors.neonLime.withOpacity(0.2) 
+                    ? themeSurface.withOpacity(0.2) 
                     : Colors.transparent,
                 border: Border.all(
-                  color: isHover ? GameHUDColors.neonLime : GameHUDColors.hardBlack,
+                  color: isHover ? themePrimary : nbt.textColor,
                   width: 2,
                 ),
                 shape: isHover ? BoxShape.rectangle : BoxShape.circle,
               ),
               child: isHover 
-                  ? Center(child: Container(width: 4, height: 4, color: GameHUDColors.neonLime)) 
+                  ? Center(child: Container(width: 4, height: 4, color: themeSurface)) 
                   : null,
             ),
           ),

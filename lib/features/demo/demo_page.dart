@@ -17,6 +17,7 @@ class DemoPage extends ConsumerWidget {
     final isDark = context.isDark;
 
     return Scaffold(
+      backgroundColor: Colors.transparent,
       // Background handled by Theme (GhostWhite vs DeepOnyx)
       body: Stack(
         children: [
@@ -85,7 +86,7 @@ class DemoPage extends ConsumerWidget {
                               child: Text(
                                 "SYSTEM.READY",
                                 style: theme.textTheme.labelLarge?.copyWith(
-                                  color: isDark ? AppColors.pureWhite : AppColors.pureBlack,
+                                  color: isDark ? AppColors.darkOnPrimary : AppColors.lightOnSurface,
                                 ),
                               ),
                             ),
@@ -116,7 +117,7 @@ class DemoPage extends ConsumerWidget {
                     Expanded(
                       flex: 6,
                       child: Container(
-                        color: isDark ? AppColors.pureBlack : AppColors.ghostGray.withOpacity(0.1),
+                        color: isDark ? AppColors.darkSurface : AppColors.lightTertiary.withOpacity(0.1),
                         child: Center(
                           child: Container(
                             width: 400,

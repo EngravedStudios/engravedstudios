@@ -38,9 +38,9 @@ class _SystemBootPreloaderState extends ConsumerState<SystemBootPreloader> {
     // Attempt to play boot sound (May fail due to autoplay policy)
     // ref.read(soundServiceProvider).playBoot(); // Disabled by user request
 
-    // Start Animation
+    // Start Animation (Faster)
     for (int i = 0; i < _bootTasks.length; i++) {
-        await Future.delayed(Duration(milliseconds: Random().nextInt(300) + 200));
+        await Future.delayed(Duration(milliseconds: Random().nextInt(100) + 50));
         if (!mounted) return;
         setState(() {
           _currentTask = _bootTasks[i];
@@ -48,7 +48,7 @@ class _SystemBootPreloaderState extends ConsumerState<SystemBootPreloader> {
         });
     }
 
-    await Future.delayed(const Duration(milliseconds: 500));
+    await Future.delayed(const Duration(milliseconds: 200));
     widget.onComplete();
   }
 
@@ -80,26 +80,39 @@ class _SystemBootPreloaderState extends ConsumerState<SystemBootPreloader> {
               ),
               const SizedBox(height: 24),
               
-              // Progress Bar
+              // Progress Bar (Smoothed)
               Container(
                 height: 4,
                 width: double.infinity,
                 color: GameHUDColors.hardBlack,
                 alignment: Alignment.centerLeft,
-                child: FractionallySizedBox(
-                  widthFactor: _progress.clamp(0.0, 1.0),
-                  child: Container(color: GameHUDColors.neonLime),
+                child: TweenAnimationBuilder<double>(
+                  tween: Tween<double>(begin: 0, end: _progress.clamp(0.0, 1.0)),
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.easeOut,
+                  builder: (context, value, _) {
+                    return FractionallySizedBox(
+                      widthFactor: value,
+                      child: Container(color: GameHUDColors.neonLime),
+                    );
+                  },
                 ),
               ),
               
               const SizedBox(height: 12),
               
-              Text(
-                "${(_progress * 100).toInt()}% :: $_currentTask",
-                 style: GameHUDTextStyles.terminalText.copyWith(
-                  color: GameHUDColors.ghostGray,
-                  fontSize: 12,
-                ),
+              TweenAnimationBuilder<double>(
+                  tween: Tween<double>(begin: 0, end: _progress),
+                  duration: const Duration(milliseconds: 200),
+                  builder: (context, value, _) {
+                    return Text(
+                      "${(value * 100).toInt()}% :: $_currentTask",
+                      style: GameHUDTextStyles.terminalText.copyWith(
+                        color: GameHUDColors.ghostGray,
+                        fontSize: 12,
+                      ),
+                    );
+                  }
               ),
             ],
           ),

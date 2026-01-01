@@ -4,6 +4,7 @@ import 'package:engravedstudios/core/audio/sound_service.dart';
 import 'package:engravedstudios/core/input/cursor_controller.dart';
 import 'package:engravedstudios/core/theme/design_system.dart';
 import 'package:engravedstudios/core/theme/theme_controller.dart';
+import 'package:engravedstudios/core/theme/theme_transition_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -34,7 +35,7 @@ class _ThemeToggleState extends ConsumerState<ThemeToggle> with SingleTickerProv
     super.dispose();
   }
 
-  void _onTap() {
+  void _onTap(TapUpDetails details) {
     ref.read(soundServiceProvider).playGlitch();
     
     // Animate rotation
@@ -44,8 +45,9 @@ class _ThemeToggleState extends ConsumerState<ThemeToggle> with SingleTickerProv
       _controller.forward();
     }
 
-    // Toggle Theme
-    ref.read(themeControllerProvider.notifier).toggle();
+    // Trigger Transition Animation
+    // The Overlay will handle the actual theme toggle at the apex of the animation
+    ref.read(themeTransitionProvider.notifier).startExpansion(details.globalPosition);
   }
 
   @override
@@ -78,7 +80,7 @@ class _ThemeToggleState extends ConsumerState<ThemeToggle> with SingleTickerProv
 }
 
 class _ThemeToggleBtn extends StatefulWidget {
-  final VoidCallback onTap;
+  final ValueChanged<TapUpDetails> onTap;
   final bool isDark;
   final AnimationController controller;
 
@@ -129,9 +131,11 @@ class _ThemeToggleBtnState extends State<_ThemeToggleBtn> {
       onExit: (_) => setState(() => _isHovered = false),
       child: GestureDetector(
         onTapDown: (_) => setState(() => _isPressed = true),
-        onTapUp: (_) => setState(() => _isPressed = false),
+        onTapUp: (details) {
+           setState(() => _isPressed = false);
+           widget.onTap(details);
+        },
         onTapCancel: () => setState(() => _isPressed = false),
-        onTap: widget.onTap,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 150),
           width: 48,

@@ -60,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      backgroundColor: GameHUDColors.paperWhite,
+      backgroundColor: Colors.transparent,
       body: SelectionArea(
         child: DefaultSelectionStyle(
           mouseCursor: SystemMouseCursors.none,

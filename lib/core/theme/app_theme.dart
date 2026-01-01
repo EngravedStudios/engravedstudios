@@ -102,8 +102,8 @@ extension NeubrutalistContext on BuildContext {
   NeubrutalistTheme get nbt => Theme.of(this).extension<NeubrutalistTheme>() ?? 
     // Fallback if extension missing (shouldn't happen)
     (Theme.of(this).brightness == Brightness.light 
-        ? const NeubrutalistTheme(primaryAccent: AppColors.neonLime, secondaryAccent: AppColors.neonLime, surface: AppColors.ghostWhite, borderColor: AppColors.pureBlack, textColor: AppColors.pureBlack, inverseText: AppColors.pureWhite, shadowColor: AppColors.pureBlack, borderWidth: 2, shadowDepth: 4)
-        : const NeubrutalistTheme(primaryAccent: AppColors.accentRed, secondaryAccent: AppColors.accentRed, surface: AppColors.deepOnyx, borderColor: AppColors.pureWhite, textColor: AppColors.pureWhite, inverseText: AppColors.pureBlack, shadowColor: AppColors.pureBlack, borderWidth: 2, shadowDepth: 4));
+        ? const NeubrutalistTheme(primaryAccent: AppColors.lightPrimary, secondaryAccent: AppColors.lightPrimary, surface: AppColors.lightSurface, borderColor: AppColors.lightOutline, textColor: AppColors.lightOutline, inverseText: AppColors.lightOnPrimary, shadowColor: AppColors.lightOutline, borderWidth: 2, shadowDepth: 4)
+        : const NeubrutalistTheme(primaryAccent: AppColors.darkSecondary, secondaryAccent: AppColors.darkSecondary, surface: AppColors.darkSurface, borderColor: AppColors.darkOutline, textColor: AppColors.darkOutline, inverseText: AppColors.darkOnPrimary, shadowColor: AppColors.darkOnPrimary, borderWidth: 2, shadowDepth: 4));
 }
 
 // --- Theme Builders ---
@@ -115,7 +115,7 @@ class AppTheme {
   static final ThemeData lightTheme = ThemeData(
     useMaterial3: true,
     brightness: Brightness.light,
-    scaffoldBackgroundColor: AppColors.lightBackground,
+    scaffoldBackgroundColor: AppColors.lightSurface,
     colorScheme: const ColorScheme(
       brightness: Brightness.light,
       primary: AppColors.lightPrimary,
@@ -128,6 +128,7 @@ class AppTheme {
       onError: AppColors.lightOnError,
       surface: AppColors.lightSurface,
       onSurface: AppColors.lightOnSurface,
+      shadow: AppColors.lightShadow,
     ),
     appBarTheme: const AppBarTheme(
       backgroundColor: AppColors.lightAppbarBackground,
@@ -154,11 +155,11 @@ class AppTheme {
       const NeubrutalistTheme(
         primaryAccent: AppColors.lightSecondary,
         secondaryAccent: AppColors.lightSecondary,
-        surface: AppColors.lightBackground,
+        surface: AppColors.lightSurface,
         borderColor: AppColors.lightPrimary,
         textColor: AppColors.lightPrimary,
         inverseText: AppColors.lightOnPrimary,
-        shadowColor: AppColors.lightPrimary,
+        shadowColor: AppColors.lightShadow,
         borderWidth: 2.0,
         shadowDepth: 4.0,
       ),
@@ -170,7 +171,7 @@ class AppTheme {
   static final ThemeData darkTheme = ThemeData(
     useMaterial3: true,
     brightness: Brightness.dark,
-    scaffoldBackgroundColor: AppColors.darkBackground,
+    scaffoldBackgroundColor: AppColors.darkSurface,
     colorScheme: const ColorScheme(
       brightness: Brightness.dark,
       primary: AppColors.darkPrimary,
@@ -183,6 +184,7 @@ class AppTheme {
       onError: AppColors.darkOnError,
       surface: AppColors.darkSurface,
       onSurface: AppColors.darkOnSurface,
+      shadow: AppColors.darkShadow,
     ),
     appBarTheme: const AppBarTheme(
       backgroundColor: AppColors.darkAppbarBackground,
@@ -208,12 +210,12 @@ class AppTheme {
       ),
       const NeubrutalistTheme(
         primaryAccent: AppColors.darkSecondary,
-        secondaryAccent: AppColors.neonLime,
+        secondaryAccent: AppColors.darkPrimary, // Was neonLime
         surface: AppColors.darkSurface,
         borderColor: AppColors.darkPrimary,
         textColor: AppColors.darkPrimary,
         inverseText: AppColors.darkOnPrimary,
-        shadowColor: AppColors.pureBlack, // Keep black shadow for dark mode visibility?
+        shadowColor: AppColors.darkShadow,
         borderWidth: 2.0,
         shadowDepth: 4.0,
       ),

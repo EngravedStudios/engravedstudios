@@ -2,9 +2,13 @@ import 'dart:math';
 
 import 'package:engravedstudios/core/theme/design_system.dart';
 import 'package:engravedstudios/core/utils/responsive_utils.dart';
-import 'package:engravedstudios/shared/widgets/parallax_effects.dart'; // Import Parallax
+import 'package:engravedstudios/shared/widgets/glitch_text.dart';
+import 'package:engravedstudios/shared/widgets/parallax_effects.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:pointer_interceptor/pointer_interceptor.dart';
+import 'package:youtube_player_iframe/youtube_player_iframe.dart';
+import 'dart:async';
 
 class HeroSection extends StatelessWidget {
   final ScrollController? scrollController;
@@ -22,29 +26,23 @@ class HeroSection extends StatelessWidget {
     return SliverToBoxAdapter(
       child: Container(
         height: screenHeight, // Full Screen
-        decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(
-              width: GameHUDLayout.borderWidth,
-              color: nbt.borderColor,
-            ),
-          ),
-        ),
+        decoration: const BoxDecoration(), // Removed clean border
         child: isDesktop 
             ? Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Expanded(flex: 6, child: MouseParallax(factor: 2.0, child: _HeroContentLeft())),
-                  Container(width: GameHUDLayout.borderWidth, color: nbt.borderColor),
+                  Expanded(flex: 6, child: _HeroContentLeft()),
+                  // Removed divider
+                  // Container(width: GameHUDLayout.borderWidth, color: nbt.borderColor),
                   Expanded(
                     flex: 4, 
                     child: scrollController != null 
                         ? ScrollParallax(
                             scrollController: scrollController!,
                             factor: 0.15, // Subtle parallax
-                            child: MouseParallax(factor: 8.0, child: _HeroVisualRight()),
+                            child: _HeroVisualRight(),
                           )
-                        : MouseParallax(factor: 8.0, child: _HeroVisualRight()),
+                        : _HeroVisualRight(),
                   ),
                 ],
               )
@@ -52,10 +50,10 @@ class HeroSection extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center, // Center vertically
                 children: [
                    // Navbar spacing handled by alignment/padding now
-                   Expanded(child: MouseParallax(factor: 1.0, child: _HeroContentLeft())),
+                   Expanded(child: _HeroContentLeft()),
                    SizedBox(
                      height: screenHeight * 0.4, 
-                     child: MouseParallax(factor: 4.0, child: _HeroVisualRight())
+                     child: _HeroVisualRight()
                    ),
                 ],
               ),
@@ -77,19 +75,21 @@ class _HeroContentLeft extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           // "Terminal" Header
-          Text(
-            "// SYSTEM.READY :: 120Hz",
+          // "Terminal" Header
+          GlitchText(
+            text: "// SYSTEM.READY :: 120Hz",
+            triggerOnLoad: true, // Glitch on load
             style: GameHUDTextStyles.terminalText.copyWith(
                color: nbt.primaryAccent,
-               backgroundColor: nbt.shadowColor, // Black bg
+               backgroundColor: nbt.shadowColor,
             ),
-          ).animate().fadeIn(duration: 400.ms).shimmer().then(delay: 500.ms),
+          ).animate().fadeIn(duration: 300.ms).shimmer().then(delay: 300.ms),
           
           const SizedBox(height: 32),
           
           _KineticLine(text: "WE ENGRAVE", fontSize: fontSize, delay: 0),
-          _KineticLine(text: "DIGITAL", fontSize: fontSize, delay: 200, color: GameHUDColors.glitchRed), // Glitch red is universal? Or secondary accent?
-          _KineticLine(text: "WORLDS.", fontSize: fontSize, delay: 400, outline: true),
+          _KineticLine(text: "DIGITAL", fontSize: fontSize, delay: 150, color: GameHUDColors.glitchRed),
+          _KineticLine(text: "WORLDS.", fontSize: fontSize, delay: 300, outline: true),
 
           const SizedBox(height: 48),
 
@@ -107,7 +107,7 @@ class _HeroContentLeft extends StatelessWidget {
               "FORGING AVANT-GARDE EXPERIENCES.\nWHERE HIGH-FASHION MEETS HARDCORE GAMING.",
               style: GameHUDTextStyles.titleLarge.copyWith(fontSize: 24, color: nbt.textColor),
             ),
-          ).animate().fadeIn(delay: 800.ms).slideX(begin: -0.05),
+          ).animate().fadeIn(delay: 600.ms).slideX(begin: -0.05, duration: 400.ms, curve: Curves.easeOutCubic),
         ],
       ),
     );
@@ -153,55 +153,117 @@ class _KineticLine extends StatelessWidget {
       child: Text(
         text,
         style: style,
-      ).animate().fadeIn(delay: delay.ms, duration: 600.ms)
-      .slideY(begin: -0.5, end: 0, curve: Curves.easeOutBack), // Bounce effect
+      ).animate().fadeIn(delay: delay.ms, duration: 400.ms)
+      .slideY(begin: -0.5, end: 0, curve: Curves.easeOutCubic),
     );
   }
 }
 
-class _HeroVisualRight extends StatelessWidget {
+class _HeroVisualRight extends StatefulWidget {
+  @override
+  State<_HeroVisualRight> createState() => _HeroVisualRightState();
+}
+
+class _HeroVisualRightState extends State<_HeroVisualRight> {
+  late YoutubePlayerController _controller;
+  late StreamSubscription _playerStateSubscription;
+  bool _isHovered = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = YoutubePlayerController.fromVideoId(
+      videoId: 'Y2VYlRB6I6o',
+      autoPlay: true,
+      params: const YoutubePlayerParams(
+        mute: true,
+        showControls: false,
+        showFullscreenButton: false,
+        loop: true,
+      ),
+    );
+    
+    // Manual loop logic using the main stream
+    _playerStateSubscription = _controller.stream.listen((value) {
+      if (value.playerState == PlayerState.ended) {
+        _controller.seekTo(seconds: 0);
+        _controller.playVideo();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _playerStateSubscription.cancel();
+    _controller.close();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final nbt = context.nbt;
-    // Tilted container
+    
+    // Hover Animation Values (Pop Effect)
+    final double shadowSize = _isHovered ? 14 : 8;
+    final Matrix4 transform = _isHovered 
+        ? Matrix4.translationValues(-4, -4, 0) 
+        : Matrix4.identity();
+
     return Center(
       child: Transform.rotate(
         angle: 3 * pi / 180, // 3 degrees tilt
-        child: Container(
-          width: 300,
-          height: 400,
-          decoration: BoxDecoration(
-            color: nbt.surface,
-            border: Border.all(width: 3, color: nbt.borderColor),
-            boxShadow: [
-              BoxShadow(
-                color: nbt.shadowColor,
-                offset: const Offset(8, 8),
-              )
-            ]
-          ),
-          child: Stack(
-            children: [
-              // Placeholder for "Game Clip"
-              Positioned.fill(
-                child: Container(
-                  color: nbt.borderColor.withOpacity(0.1),
-                  child: Center(
-                    child: Icon(Icons.play_circle_outline, size: 64, color: nbt.textColor),
+        child: MouseRegion(
+          onEnter: (_) => setState(() => _isHovered = true),
+          onExit: (_) => setState(() => _isHovered = false),
+          cursor: SystemMouseCursors.click, // Indicates interactivity
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 150),
+            curve: Curves.easeInOut,
+            transform: transform,
+            width: 300,
+            height: 400,
+            decoration: BoxDecoration(
+              color: nbt.surface,
+              border: Border.all(width: 3, color: nbt.borderColor),
+              boxShadow: [
+                BoxShadow(
+                  color: nbt.shadowColor,
+                  offset: Offset(shadowSize, shadowSize),
+                )
+              ]
+            ),
+            clipBehavior: Clip.hardEdge,
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                FittedBox(
+                  fit: BoxFit.cover,
+                  child: SizedBox(
+                    width: 1600,
+                    height: 900,
+                    child: IgnorePointer(
+                      child: YoutubePlayer(
+                        controller: _controller,
+                        aspectRatio: 16/9,
+                      ),
+                    ),
                   ),
                 ),
-              ),
-              // Overlay Lines/Grid
-               Positioned.fill(
-                child: CustomPaint(
-                  painter: _GridPainter(nbt.borderColor),
+                // Interaction Blocker / Event Capturer
+                Positioned.fill(
+                  child: PointerInterceptor(
+                    intercepting: true,
+                    child: Container(
+                      color: Colors.transparent, 
+                    ),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ).animate(onPlay: (c) => c.repeat(reverse: true))
-      .moveY(begin: -10, end: 10, duration: 2000.ms, curve: Curves.easeInOutQuad), // Floating animation
+      .moveY(begin: -10, end: 10, duration: 2000.ms, curve: Curves.easeInOutQuad),
     );
   }
 }

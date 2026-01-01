@@ -4,7 +4,9 @@ import 'package:engravedstudios/features/studio/data/team_data.dart';
 import 'package:engravedstudios/features/studio/presentation/blueprint_grid_painter.dart';
 import 'package:engravedstudios/features/studio/presentation/widgets/team_card.dart';
 import 'package:engravedstudios/features/studio/presentation/widgets/tech_sticker.dart';
+import 'package:engravedstudios/shared/widgets/glitch_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class StudioSection extends ConsumerWidget {
@@ -13,6 +15,7 @@ class StudioSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final team = ref.watch(teamMembersProvider);
+    final nbt = context.nbt;
     
     final isMobile = ResponsiveUtils.isMobile(context);
     final manifestoFontSize = context.responsive<double>(32, 48, 40);
@@ -35,9 +38,10 @@ class StudioSection extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   // Manifesto
-                  Text(
-                    "THE FORGE",
-                    style: GameHUDTextStyles.terminalText.copyWith(color: GameHUDColors.cyan),
+                  GlitchText(
+                    text: "THE FORGE",
+                    triggerOnLoad: true,
+                    style: GameHUDTextStyles.terminalText.copyWith(color: nbt.textColor),
                   ),
                   const SizedBox(height: 24),
                   Text(
@@ -50,7 +54,8 @@ class StudioSection extends ConsumerWidget {
                       shadows: [],
                       decoration: TextDecoration.none,
                     ),
-                  ).copyWith(foreground: Paint()..style = PaintingStyle.stroke ..strokeWidth = 2 ..color = GameHUDColors.hardBlack),
+                  ).copyWith(foreground: Paint()..style = PaintingStyle.stroke ..strokeWidth = 2 ..color = nbt.textColor)
+                   .animate().fadeIn(duration: 800.ms, delay: 200.ms).slideY(begin: 0.2, end: 0, curve: Curves.easeOutQuad),
                   
                   const SizedBox(height: 80),
                   
@@ -63,7 +68,7 @@ class StudioSection extends ConsumerWidget {
                       final angle = (member.name.length % 5) - 2.0; 
                       return TeamCard(member: member, angle: angle);
                     }).toList(),
-                  ),
+                  ).animate().fadeIn(duration: 800.ms, delay: 400.ms).slideY(begin: 0.1, end: 0, curve: Curves.easeOutQuad),
                   
                   const SizedBox(height: 80),
                   
@@ -72,18 +77,18 @@ class StudioSection extends ConsumerWidget {
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                         TechSticker(label: "UNREAL ENGINE", color: Color(0xFF54C5F8)),
-                         SizedBox(width: 16),
-                         TechSticker(label: "GODOT", color: Color(0xFF00B4AB)),
-                         SizedBox(width: 16),
-                         TechSticker(label: "BLENDER", color: Color(0xFFE87D0D)),
-                         SizedBox(width: 16),
-                        TechSticker(label: "SUBSTANCE PAINTER", color: Color(0xFFA80000)),
-                         SizedBox(width: 16),
-                         TechSticker(label: "DAVINCI RESOLVE", color: Color(0xFF2D2D2D)),
+                      children: [
+                         TechSticker(label: "UNREAL ENGINE", color: nbt.surface),
+                         const SizedBox(width: 16),
+                         TechSticker(label: "GODOT", color: nbt.surface),
+                         const SizedBox(width: 16),
+                         TechSticker(label: "BLENDER", color: nbt.surface),
+                         const SizedBox(width: 16),
+                        TechSticker(label: "SUBSTANCE PAINTER", color: nbt.surface),
+                         const SizedBox(width: 16),
+                         TechSticker(label: "DAVINCI RESOLVE", color: nbt.surface),
                       ],
-                    ),
+                    ).animate().fadeIn(duration: 800.ms, delay: 600.ms),
                   ),
                 ],
               ),

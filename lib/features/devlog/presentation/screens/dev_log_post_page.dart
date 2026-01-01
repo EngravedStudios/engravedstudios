@@ -22,7 +22,7 @@ class DevLogPostPage extends StatelessWidget {
         "- AI Behavior";
 
     return Scaffold(
-      backgroundColor: nbt.surface,
+      backgroundColor: Colors.transparent,
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 48),
         child: Center(

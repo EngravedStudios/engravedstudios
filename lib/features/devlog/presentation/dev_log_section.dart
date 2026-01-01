@@ -2,6 +2,7 @@ import 'package:engravedstudios/core/theme/design_system.dart';
 import 'package:engravedstudios/features/devlog/application/dev_log_provider.dart';
 import 'package:engravedstudios/features/devlog/presentation/scanline_painter.dart';
 import 'package:engravedstudios/features/devlog/presentation/widgets/dev_log_entry_card.dart';
+import 'package:engravedstudios/shared/widgets/glitch_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -28,7 +29,14 @@ class DevLogSection extends ConsumerWidget {
                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
                child: Row(
                  children: [
-                   Text("> Dev-Log", style: GameHUDTextStyles.titleLarge),
+                   GlitchText(
+                     text: "> Dev-Log", 
+                     triggerOnLoad: true, // Glitch on first view (since it rebuilds on scroll?) 
+                     // Actually triggerOnLoad triggers on initState. Since this widget is in a Sliver, 
+                     // it might be kept alive or rebuilt. For "first time view", we might need VisibilityDetector.
+                     // But GlitchText triggerOnLoad is a good approximation if the widget is built lazily.
+                     style: GameHUDTextStyles.titleLarge
+                   ),
                    const SizedBox(width: 8),
                    Container(
                      width: 16, height: 32, 

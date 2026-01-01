@@ -43,10 +43,10 @@ class GamesGallery extends ConsumerWidget {
              delegate: SliverChildBuilderDelegate(
                (context, index) {
                  final game = games[index];
-                 // Only fade animation - no slideY which shifts layout
                  return EngravedGameCard(game: game)
                    .animate()
-                   .fadeIn(delay: (index * 100).ms);
+                   .fade(duration: 500.ms)
+                   .moveY(begin: 50, end: 0, curve: Curves.easeOutQuad);
                },
                childCount: games.length,
              ),

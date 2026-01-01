@@ -44,7 +44,7 @@ class PressKitPage extends StatelessWidget {
     ];
 
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: Colors.transparent,
       body: SingleChildScrollView(
         padding: const EdgeInsets.only(left: 24.0, right: 24.0, top: 100, bottom: 48.0),
         child: Center(

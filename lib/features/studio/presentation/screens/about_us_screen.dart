@@ -15,7 +15,7 @@ class AboutUsScreen extends ConsumerWidget {
     final teamMembers = ref.watch(teamMembersProvider);
 
     return Scaffold(
-      backgroundColor: nbt.surface,
+      backgroundColor: Colors.transparent,
       body: CustomScrollView(
         slivers: [
           // Header

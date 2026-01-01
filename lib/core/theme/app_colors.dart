@@ -1,55 +1,41 @@
 import 'dart:ui';
 
 class AppColors {
-  // --- Raw Palette ---
-  static const Color _neonLime = Color(0xFFC6FF00);
-  static const Color _accentRed = Color(0xFFFF004C);
-  static const Color _ghostWhite = Color(0xFFF8F8F8);
-  static const Color _deepOnyx = Color(0xFF0A0A0A);
-  static const Color _slate900 = Color(0xFF0F172A);
-  static const Color _white = Color(0xFFFFFFFF);
-  static const Color _grey = Color(0xFF888888);
-
   // --- LIGHT THEME TOKENS ---
-  static const Color lightPrimary = _slate900;
-  static const Color lightOnPrimary = _white;
-  static const Color lightSecondary = _neonLime;
-  static const Color lightOnSecondary = _slate900;
-  static const Color lightTertiary = _grey;
-  static const Color lightOnTertiary = _slate900;
-  static const Color lightError = _accentRed;
-  static const Color lightOnError = _white;
-  static const Color lightSurface = _white;
-  static const Color lightOnSurface = _slate900;
-  static const Color lightBackground = _ghostWhite;
-  static const Color lightOnBackground = _slate900;
-  
-  static const Color lightAppbarBackground = _ghostWhite;
-  static const Color lightAppbarForeground = _slate900;
+  static const Color lightPrimary = Color(0xFF4C6851);
+  static const Color lightOnPrimary = Color(0xFFFFFFFF);
+  static const Color lightPrimaryContainer = Color(0xFFDDC6A7);
+  static const Color lightOnPrimaryContainer = Color(0xFF1A1A1A);
+  static const Color lightSecondary = Color(0xFFB83A2E);
+  static const Color lightOnSecondary = Color(0xFFFFFFFF);
+  static const Color lightTertiary = Color(0xFF6B5E4C);
+  static const Color lightOnTertiary = Color(0xFFFFFFFF);
+  static const Color lightError = Color(0xFFB83A2E);
+  static const Color lightOnError = Color(0xFFB83A2E);
+  static const Color lightSurface = Color(0xFFF4EFE6);
+  static const Color lightOnSurface = Color(0xFF1A1A1A);
+  static const Color lightOutline = Color(0xFF1A1A1A);
+  static const Color lightShadow = Color(0xFF6B5E4C);
+
+  static const Color lightAppbarBackground = Color(0xFFF4EFE6);
+  static const Color lightAppbarForeground = Color(0xFF1A1A1A);
 
   // --- DARK THEME TOKENS ---
-  static const Color darkPrimary = _white;
-  static const Color darkOnPrimary = _slate900;
-  static const Color darkSecondary = _accentRed;
-  static const Color darkOnSecondary = _white;
-  static const Color darkTertiary = _grey;
-  static const Color darkOnTertiary = _white;
-  static const Color darkError = _accentRed;
-  static const Color darkOnError = _slate900;
-  static const Color darkSurface = _deepOnyx;
-  static const Color darkOnSurface = _white;
-  static const Color darkBackground = _deepOnyx;
-  static const Color darkOnBackground = _white;
+  static const Color darkPrimary = Color(0xFFDDC6A7);
+  static const Color darkOnPrimary = Color(0xFF1A1A1A);
+  static const Color darkPrimaryContainer = Color(0xFF4C6851);
+  static const Color darkOnPrimaryContainer = Color(0xFFFFFFFF);
+  static const Color darkSecondary = Color(0xFFB83A2E);
+  static const Color darkOnSecondary = Color(0xFFFFFFFF);
+  static const Color darkTertiary = Color(0xFF2D362E);
+  static const Color darkOnTertiary = Color(0xFFDDC6A7);
+  static const Color darkError = Color(0xFFCF6679);
+  static const Color darkOnError = Color(0xFF1A1A1A);
+  static const Color darkSurface = Color(0xFF1A1A1A);
+  static const Color darkOnSurface = Color(0xFFF4EFE6);
+  static const Color darkOutline = Color(0xFFDDC6A7);
+  static const Color darkShadow = Color(0xFFDDC6A7);
 
-  static const Color darkAppbarBackground = _deepOnyx;
-  static const Color darkAppbarForeground = _white;
-
-  // --- Legacy / Direct Access (For specific widgets if needed) ---
-  static const Color neonLime = _neonLime;
-  static const Color accentRed = _accentRed;
-  static const Color pureBlack = _slate900;
-  static const Color pureWhite = _white;
-  static const Color deepOnyx = _deepOnyx;
-  static const Color ghostWhite = _ghostWhite;
-  static const Color ghostGray = _grey;
+  static const Color darkAppbarBackground = Color(0xFF1A1A1A);
+  static const Color darkAppbarForeground = Color(0xFFF4EFE6);
 }

@@ -37,7 +37,7 @@ class _TechStickerState extends ConsumerState<TechSticker> with HoverableMixin {
           borderRadius: BorderRadius.circular(50), 
           boxShadow: [
             BoxShadow(
-              color: nbt.shadowColor.withOpacity(0.5),
+              color: nbt.shadowColor.withValues(alpha: 0.5),
               offset: isHovered ? const Offset(4, 8) : const Offset(2, 2),
               blurRadius: 0,
             )
@@ -47,7 +47,7 @@ class _TechStickerState extends ConsumerState<TechSticker> with HoverableMixin {
           widget.label,
           style: GameHUDTextStyles.terminalText.copyWith(
             fontWeight: FontWeight.bold,
-            color: nbt.shadowColor, // Sticker text usually black/dark on color
+            color: nbt.primaryAccent, // Sticker text usually black/dark on color
           ),
         ),
       ),

@@ -4,6 +4,7 @@ import 'package:engravedstudios/features/contact/presentation/widgets/neubrutali
 import 'package:engravedstudios/features/contact/presentation/widgets/terminal_input.dart';
 import 'package:engravedstudios/features/contact/presentation/widgets/transmission_button.dart';
 import 'package:engravedstudios/features/newsletter/presentation/newsletter_signup_widget.dart';
+import 'package:engravedstudios/shared/widgets/glitch_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
@@ -23,16 +24,15 @@ class ContactSection extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // Massive CTA
-            Text(
-              "READY TO\nENGRAVE\nTHE FUTURE?",
+            GlitchText(
+              text: "READY TO\nENGRAVE\nTHE FUTURE?",
+              triggerOnLoad: true,
               style: GameHUDTextStyles.titleLarge.copyWith(
                 fontSize: titleFontSize, // Massive
                 height: 0.9,
-                color: Colors.transparent, // Outline style
-                // Provide stroke via Paint
+                foreground: Paint()..style = PaintingStyle.stroke ..strokeWidth = 2 ..color = GameHUDColors.hardBlack
               ),
-            ).copyWith(foreground: Paint()..style = PaintingStyle.stroke ..strokeWidth = 2 ..color = GameHUDColors.hardBlack)
-            .animate().fadeIn(duration: 800.ms),
+            ).animate().fadeIn(duration: 800.ms),
             
             const SizedBox(height: 64),
             

@@ -34,22 +34,26 @@ class _BrutalistButtonState extends State<BrutalistButton> {
     // Secondary: Transparent/White
     
     Color baseBg = widget.isPrimary 
-        ? appColors.highlight // Lime or Red
-        : (isDark ? AppColors.deepOnyx : AppColors.ghostWhite);
+        ? (isDark ? AppColors.darkPrimary : AppColors.lightPrimary)
+        : (isDark ? AppColors.darkSurface : AppColors.lightSurface);
         
     Color baseText = widget.isPrimary 
-        ? AppColors.pureBlack 
-        : (isDark ? AppColors.pureWhite : AppColors.pureBlack);
+        ? (isDark ? AppColors.darkOnPrimary : AppColors.lightOnPrimary)
+        : (isDark ? AppColors.darkOnSurface : AppColors.lightOnSurface);
         
-    Color baseBorder = isDark ? AppColors.pureWhite : AppColors.pureBlack;
+    Color baseBorder = isDark ? AppColors.darkOutline : AppColors.lightOutline;
 
     if (widget.isPrimary) {
-       // Primary Button always black text on Lime/Red?
-       // Dark Mode: Red Bg, White Text? Or Black Text?
-       // Let's stick to high contrast. Lime -> Black. Red -> White.
-       if (isDark) baseText = AppColors.pureWhite; 
+       // Ensure high contrast logic if needed, but existing tokens should handle it.
+       // lightPrimary is Green, onPrimary is White.
+       // darkPrimary is Tan?, onPrimary is Black. 
+       // previous logic had overrides.
+       // Let's stick to theme tokens.
     }
 
+    // Hover Colors (Swapped)
+    final nbt = context.nbt;
+    
     // Hover Colors (Swapped)
     final bg = _isHovered ? baseText : baseBg;
     final text = _isHovered ? baseBg : baseText;
@@ -70,8 +74,12 @@ class _BrutalistButtonState extends State<BrutalistButton> {
           decoration: BoxDecoration(
             color: bg,
             border: Border.all(width: 2.0, color: border),
-            // No shadow/elevation as per flat brutalist style? Or maybe simple offset?
-            // "Geometry: 0px border radius" requested.
+            boxShadow: [
+              BoxShadow(
+                color: nbt.shadowColor,
+                offset: _isHovered ? const Offset(2, 2) : const Offset(4, 4),
+              ),
+            ],
           ),
           child: Text(
             widget.text.toUpperCase(),
